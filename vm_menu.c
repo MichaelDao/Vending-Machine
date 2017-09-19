@@ -27,6 +27,7 @@ void initMenu(MenuItem * menu)
     printf("Select your option (1-9): ");
 }
 
+
 /**
  * Gets input from the user and returns a pointer to the MenuFunction
  * that defines how to perform the user's selection. NULL is returned

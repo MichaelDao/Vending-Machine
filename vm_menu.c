@@ -13,20 +13,19 @@
 
 void initMenu(MenuItem * menu)
 {
-    printf("Main Menu:\n");
-    printf("1. Display items\n");
-    printf("2.Purchase Items\n");
-    printf("3.Save and Exit\n");
-    printf("Administrator-Only Menu:\n");
-    printf("4.Add Item\n");
-    printf("5.Remove Item\n");
-    printf("6.Display Coins\n");
-    printf("7.Reset Stock\n");
-    printf("8.Reset Coins\n");
-    printf("9.Abort Program\n");
-    printf("Select your option (1-9): ");
+    printf("Main Menu:\n",
+           "1. Display items\n",
+           "2.Purchase Items\n",
+           "3.Save and Exit\n",
+           "Administrator-Only Menu:\n",
+           "4.Add Item\n",
+           "5.Remove Item\n",
+           "6.Display Coins\n",
+           "7.Reset Stock\n",
+           "8.Reset Coins\n",
+           "9.Abort Program\n",
+           "Select your option (1-9): ");
 }
-
 
 /**
  * Gets input from the user and returns a pointer to the MenuFunction

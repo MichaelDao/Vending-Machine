@@ -2,10 +2,15 @@
 
 int main(int argc, char ** argv)
 {
+    /* Create structures */
     MenuItem menu;
+
+    /* Print menu */
     initMenu(&menu);
 
-    printf("Goodbye. \n\n");
 
+
+    /* Exit the program */
+    printf("Goodbye. \n\n");
     return EXIT_SUCCESS;
 }

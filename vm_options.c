@@ -41,6 +41,26 @@ Boolean loadData(
  **/
 Boolean loadStock(VmSystem * system, const char * fileName)
 {
+
+    FILE *fp;
+
+    /* For file reading loading */
+    char buff[255];
+
+    /* Write to file */
+    fp = fopen("test.dat", "w+");
+    fprintf(fp, "THIS IS TEST\n");
+    fputs("yes\n",fp);
+    fclose(fp);
+
+    /* Read the file */
+    fp = fopen("test.dat", "r");
+    fgets(buff, 255, fp);
+    printf("2: %s\n", buff);
+    fgets(buff, 255, (FILE*)fp);
+    printf("3: %s\n",  buff);
+    fclose(fp);
+
     return FALSE;
 }
 

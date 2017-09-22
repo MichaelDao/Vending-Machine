@@ -13,17 +13,17 @@
 
 void initMenu(MenuItem * menu)
 {
-    printf("Main Menu:\n",
-           "1. Display items\n",
-           "2.Purchase Items\n",
-           "3.Save and Exit\n",
-           "Administrator-Only Menu:\n",
-           "4.Add Item\n",
-           "5.Remove Item\n",
-           "6.Display Coins\n",
-           "7.Reset Stock\n",
-           "8.Reset Coins\n",
-           "9.Abort Program\n",
+    printf("Main Menu:\n"
+           "1. Display items\n"
+           "2.Purchase Items\n"
+           "3.Save and Exit\n"
+           "Administrator-Only Menu:\n"
+           "4.Add Item\n"
+           "5.Remove Item\n"
+           "6.Display Coins\n"
+           "7.Reset Stock\n"
+           "8.Reset Coins\n"
+           "9.Abort Program\n"
            "Select your option (1-9): ");
 }
 

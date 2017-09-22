@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 11)
 set(SOURCE_FILES
         coins.dat
         Makefile
-        stock.dat
+        cmake-build-debug/stock.dat
         utility.c
         utility.h
         vm

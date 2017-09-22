@@ -33,6 +33,8 @@ void systemFree(VmSystem * system)
 Boolean loadData(
     VmSystem * system, const char * stockFileName, const char * coinsFileName)
 {
+
+
     return FALSE;
 }
 
@@ -41,26 +43,42 @@ Boolean loadData(
  **/
 Boolean loadStock(VmSystem * system, const char * fileName)
 {
+    /* pointer for file reading */
+    FILE *fileRead;
 
-    FILE *fp;
-
-    /* For file reading loading */
+    /* For text file buffer */
     char buff[255];
 
-    /* Write to file */
-    fp = fopen("test.dat", "w+");
-    fprintf(fp, "THIS IS TEST\n");
-    fputs("yes\n",fp);
-    fclose(fp);
+    char *token;
+    const char delim[2] = "|";
 
     /* Read the file */
-    fp = fopen("test.dat", "r");
-    fgets(buff, 255, fp);
-    printf("2: %s\n", buff);
-    fgets(buff, 255, (FILE*)fp);
-    printf("3: %s\n",  buff);
-    fclose(fp);
+    /* TODO Instead of string name, try to use filename char */
+    fileRead = fopen("stock.dat", "r");
 
+    /* DEBUG NEW LINE */
+    printf("\n");
+
+    while (fgets(buff, sizeof(buff), fileRead))
+    {
+        /* get the first token */
+        token = strtok(buff, delim);
+
+        /* walk through other tokens */
+        while( token != NULL )
+        {
+            printf( " %s\n", token );
+
+            token = strtok(NULL, delim);
+        }
+
+        /*
+        printf(strtok(buff,"|"));
+        printf("%s", buff);
+*/    }
+
+    /* Close the file reader */
+    fclose(fileRead);
     return FALSE;
 }
 
@@ -69,7 +87,35 @@ Boolean loadStock(VmSystem * system, const char * fileName)
  **/
 Boolean loadCoins(VmSystem * system, const char * fileName)
 {
+    /* pointer for file reading */
+    FILE *fileRead;
+
+    /* For text file buffer size */
+    char buff[255];
+
+    /* Read the file */
+    fileRead = fopen(fileName, "r");
+
+    /* Line 1 */
+    fgets(buff, sizeof(buff), fileRead);
+    printf("1: %s\n", buff);
+
+    /* Line 2 */
+    fgets(buff, sizeof(buff), fileRead);
+    printf("2: %s\n", buff);
+
+    /* Close the file reader */
+    fclose(fileRead);
+
     return FALSE;
+
+    /* Write to file */
+    /*
+    fp = fopen("stock.dat", "w+");
+    fprintf(fp, "THIS IS TEST\n");
+    fputs("yes\n",fp);
+    fclose(fp);
+    */
 }
 
 /**
@@ -93,14 +139,21 @@ Boolean saveCoins(VmSystem * system)
  * This is the data loaded into the linked list in the requirement 2.
  **/
 void displayItems(VmSystem * system)
-{ }
+{
+
+
+
+}
 
 /**
  * This option allows the user to purchase an item.
  * This function implements requirement 5 of the assignment specification.
  **/
 void purchaseItem(VmSystem * system)
-{ }
+{
+
+
+}
 
 /**
  * You must save all data to the data files that were provided on the command
@@ -108,21 +161,31 @@ void purchaseItem(VmSystem * system)
  * This function implements requirement 6 of the assignment specification.
  **/
 void saveAndExit(VmSystem * system)
-{ }
+{
+
+}
 
 /**
  * This option adds an item to the system. This function implements
  * requirement 7 of of assignment specification.
  **/
 void addItem(VmSystem * system)
-{ }
+{
+
+
+
+}
 
 /**
  * Remove an item from the system, including free'ing its memory.
  * This function implements requirement 8 of the assignment specification.
  **/
 void removeItem(VmSystem * system)
-{ }
+{
+
+
+
+}
 
 /**
  * This option will require you to display the coins from lowest to highest
@@ -131,7 +194,11 @@ void removeItem(VmSystem * system)
  * specifications.
  **/
 void displayCoins(VmSystem * system)
-{ }
+{
+
+
+
+}
 
 /**
  * This option will require you to iterate over every stock in the
@@ -140,7 +207,11 @@ void displayCoins(VmSystem * system)
  * This function implements requirement 9 of the assignment specification.
  **/
 void resetStock(VmSystem * system)
-{ }
+{
+
+
+
+}
 
 /**
  * This option will require you to iterate over every coin in the coin
@@ -150,11 +221,18 @@ void resetStock(VmSystem * system)
  * assignment specifications.
  **/
 void resetCoins(VmSystem * system)
-{ }
+{
+
+
+
+}
 
 /**
  * This option will require you to display goodbye and free the system.
  * This function implements requirement 10 of the assignment specification.
  **/
 void abortProgram(VmSystem * system)
-{ }
+{
+
+
+}

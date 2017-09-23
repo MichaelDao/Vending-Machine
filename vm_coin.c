@@ -10,3 +10,9 @@
  * init coins array, insert coin, change coin count for Denomination,
  * convert Denomination to coin value, deducting coins from register, etc...
  */
+
+Coin* initializeCoins()
+{
+    Denomination denom = FIVE_CENTS;
+    int x;
+}

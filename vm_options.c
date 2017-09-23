@@ -13,8 +13,11 @@
  **/
 Boolean systemInit(VmSystem * system)
 {
+    system->itemList = initializeList();
+    system->coinFileName = NULL;
+    system->stockFileName = NULL;
 
-    return FALSE;
+    return TRUE;
 }
 
 /**
@@ -45,36 +48,34 @@ Boolean loadData(
  **/
 Boolean loadStock(VmSystem * system, const char * fileName)
 {
+    /* DECLARING VARIABLES */
     FILE *filePoint; /* File reader pointer */
 
     char buff[255]; /* Store text line */
-    char *token; /* Store seperated text */
+    char *token; /* Store individual text */
     const char delimit[2] = "|"; /* delimiter */
-
-    Node *head = NULL;
-    Node *tmp = NULL;
-
-    Node *next;
-    Stock *data;
 
     char *ptr; /* strol pointer */
     int stringConvert; /* Holds strol result */
 
     int x; /* for loop index */
 
-    /* Read the file */
-    /* TODO Instead of string name, try to use filename char */
+
+
+    Node *head = NULL; /* The first node in the list */
+    Node *tmp = NULL;
+
+    Stock *data;
+
+    /* THE LOADING PROCESS */
+
+    /* Read the file TODO Instead of string name, try to use filename char */
     filePoint = fopen("stock.dat", "r");
 
-    /* DEBUG NEW LINE */
-    printf("\n");
-/*
-    prepareNode(head, data);
-*/
-    /* read each line */
+    /* read each line in the text file */
     while (fgets(buff, sizeof(buff), filePoint))
     {
-        /* Grab the whole string line to be processed */
+        /* Grab the whole line for processing */
         token = strtok(buff, delimit);
 
         /* walk through all tokens */
@@ -99,81 +100,26 @@ Boolean loadStock(VmSystem * system, const char * fileName)
                     break;
             }
 
-            /* Debug print the token */
-            printf( " %s\n", token );
+            printf( " %s\n", token ); /*DEBUG*/
 
             /* move to the next token */
             token = strtok(NULL, delimit);
         }
-/*
-        head = createNode(data,next);
-  */      printf("==========================\n");
+
+        printf("==========================\n"); /*DEBUG */
     }
 
     /* Close the file reader */
     fclose(filePoint);
+
     return FALSE;
 }
-
-/* Create a new node before applying data */
-Node* createNode(Stock *data, Node *next)
-{
-    Node* newNode = malloc(sizeof(Node));
-
-    newNode->data = data;
-    newNode->next = next;
-
-    return newNode;
-}
-
-/* Point to the new node in the list */
-Node* prepareNode(Node *head, Stock *data)
-{
-    /* Call create node method */
-    Node* newNode = createNode(data, head);
-
-    /* The head will be set to this node */
-    head = newNode;
-    return head;
-}
-
-
-
 
 /**
  * Loads the coin file data into the system.
  **/
 Boolean loadCoins(VmSystem * system, const char * fileName)
 {
-    /* pointer for file reading */
-    FILE *fileRead;
-
-    /* For text file buffer size */
-    char buff[255];
-
-    /* Read the file */
-    fileRead = fopen(fileName, "r");
-
-    /* Line 1 */
-    fgets(buff, sizeof(buff), fileRead);
-    printf("1: %s\n", buff);
-
-    /* Line 2 */
-    fgets(buff, sizeof(buff), fileRead);
-    printf("2: %s\n", buff);
-
-    /* Close the file reader */
-    fclose(fileRead);
-
-    return FALSE;
-
-    /* Write to file */
-    /*
-    fp = fopen("stock.dat", "w+");
-    fprintf(fp, "THIS IS TEST\n");
-    fputs("yes\n",fp);
-    fclose(fp);
-    */
 }
 
 /**
@@ -206,28 +152,10 @@ void displayItems(VmSystem * system)
     printf("ID \t | Name \t\t | Available | Price\n");
     printf("---------------------------------------------");
 
-/*
-    quickLookList(headNode);
-*/
 
 }
 
-/*
-    traverse the linked list
-*/
-void quickLookList(Node * headNode)
-{
-    Node* currentNode;
-    currentNode = headNode;
-    while(currentNode != NULL)
-    {
-        if (currentNode != NULL)
-            printf("%s ", currentNode->data->id);
 
-        /* Get the next node */
-        currentNode = currentNode->next;
-    }
-}
 
 /**
  * This option allows the user to purchase an item.

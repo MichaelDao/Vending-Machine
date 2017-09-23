@@ -22,4 +22,7 @@ void resetStock(VmSystem * system);
 void resetCoins(VmSystem * system);
 void abortProgram(VmSystem * system);
 
+List* initializeList();
+
+
 #endif

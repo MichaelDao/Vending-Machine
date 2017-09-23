@@ -45,23 +45,22 @@ Boolean loadData(
  **/
 Boolean loadStock(VmSystem * system, const char * fileName)
 {
-    /* pointer for file reading */
-    FILE *filePoint;
+    FILE *filePoint; /* File reader pointer */
 
-    /* For text file buffer */
-    char buff[255];
-    char *token;
-    const char delimit[2] = "|";
-    Node *newNode;
+    char buff[255]; /* Store text line */
+    char *token; /* Store seperated text */
+    const char delimit[2] = "|"; /* delimiter */
+
+    Node *head = NULL;
+    Node *tmp = NULL;
+
     Node *next;
     Stock *data;
-    char *ptr;
-    int x;
-    int stringConvert;
 
-    unsigned int priceInDollars;
-    // Trying to allocate memory TEST
-    newNode = malloc(sizeof(Node));
+    char *ptr; /* strol pointer */
+    int stringConvert; /* Holds strol result */
+
+    int x; /* for loop index */
 
     /* Read the file */
     /* TODO Instead of string name, try to use filename char */
@@ -69,7 +68,9 @@ Boolean loadStock(VmSystem * system, const char * fileName)
 
     /* DEBUG NEW LINE */
     printf("\n");
-
+/*
+    prepareNode(head, data);
+*/
     /* read each line */
     while (fgets(buff, sizeof(buff), filePoint))
     {
@@ -104,6 +105,9 @@ Boolean loadStock(VmSystem * system, const char * fileName)
             /* move to the next token */
             token = strtok(NULL, delimit);
         }
+/*
+        head = createNode(data,next);
+  */      printf("==========================\n");
     }
 
     /* Close the file reader */
@@ -126,7 +130,7 @@ Node* createNode(Stock *data, Node *next)
 Node* prepareNode(Node *head, Stock *data)
 {
     /* Call create node method */
-    Node* newNode = createNode(data,head);
+    Node* newNode = createNode(data, head);
 
     /* The head will be set to this node */
     head = newNode;
@@ -194,32 +198,27 @@ Boolean saveCoins(VmSystem * system)
  **/
 void displayItems(VmSystem * system)
 {
-    unsigned id;
-    unsigned name;
-    unsigned price;
-    unsigned dollar;
-    unsigned cent;
-    unsigned onHand;
 
     Node * headNode;
 
-    printf("DEBUG");
+    printf("DEBUG\n");
 
     printf("ID \t | Name \t\t | Available | Price\n");
     printf("---------------------------------------------");
 
-
-    analyzeLinkedList(headNode);
-
+/*
+    quickLookList(headNode);
+*/
 
 }
 
 /*
     traverse the linked list
 */
-void analyzeLinkedList(Node * headNode)
+void quickLookList(Node * headNode)
 {
-    Node* currentNode = headNode;
+    Node* currentNode;
+    currentNode = headNode;
     while(currentNode != NULL)
     {
         if (currentNode != NULL)

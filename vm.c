@@ -4,18 +4,19 @@ int main(int argc, char ** argv)
 {
     /* Create structures for calling */
     MenuItem menu;
-    VmSystem test;
+    VmSystem system;
 
     /* Constant variables for file names */
-    const char stockFile = "stock.dat";
-    const char coinsFile = "coins.dat";
+    const char stockFileName = "stock.dat";
+    const char coinsFileName = "coins.dat";
 
     /* Print menu */
     initMenu(&menu);
 
-    /* Load the stock file */
+    /* Load the files */
+    loadData(&system, stockFileName, coinsFileName);
 
-    loadStock(&test, stockFile);
+    displayItems(&system);
 
 
     /* Exit the program */

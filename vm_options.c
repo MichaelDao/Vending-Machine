@@ -13,6 +13,7 @@
  **/
 Boolean systemInit(VmSystem * system)
 {
+
     return FALSE;
 }
 
@@ -33,7 +34,8 @@ void systemFree(VmSystem * system)
 Boolean loadData(
     VmSystem * system, const char * stockFileName, const char * coinsFileName)
 {
-
+    /* Load stock file */
+    loadStock(system, stockFileName);
 
     return FALSE;
 }
@@ -44,43 +46,95 @@ Boolean loadData(
 Boolean loadStock(VmSystem * system, const char * fileName)
 {
     /* pointer for file reading */
-    FILE *fileRead;
+    FILE *filePoint;
 
     /* For text file buffer */
     char buff[255];
-
     char *token;
-    const char delim[2] = "|";
+    const char delimit[2] = "|";
+    Node *newNode;
+    Node *next;
+    Stock *data;
+    char *ptr;
+    int x;
+    int stringConvert;
+
+    unsigned int priceInDollars;
+    // Trying to allocate memory TEST
+    newNode = malloc(sizeof(Node));
 
     /* Read the file */
     /* TODO Instead of string name, try to use filename char */
-    fileRead = fopen("stock.dat", "r");
+    filePoint = fopen("stock.dat", "r");
 
     /* DEBUG NEW LINE */
     printf("\n");
 
-    while (fgets(buff, sizeof(buff), fileRead))
+    /* read each line */
+    while (fgets(buff, sizeof(buff), filePoint))
     {
-        /* get the first token */
-        token = strtok(buff, delim);
+        /* Grab the whole string line to be processed */
+        token = strtok(buff, delimit);
 
-        /* walk through other tokens */
-        while( token != NULL )
-        {
+        /* walk through all tokens */
+        for(x=0; token != NULL; x++ ) {
+            switch (x) {
+                case 0:
+                    strcpy(data->id, token);
+                    break;
+                case 1:
+                    strcpy(data->name, token);
+                    break;
+                case 2:
+                    strcpy(data->desc, token);
+                    break;
+                case 3:
+                    stringConvert = strtol(token, &ptr, 0);
+                    data->price.dollars = stringConvert;
+                    break;
+                case 4:
+                    stringConvert = strtol(token, &ptr, 0);
+                    data->onHand = stringConvert;
+                    break;
+            }
+
+            /* Debug print the token */
             printf( " %s\n", token );
 
-            token = strtok(NULL, delim);
+            /* move to the next token */
+            token = strtok(NULL, delimit);
         }
-
-        /*
-        printf(strtok(buff,"|"));
-        printf("%s", buff);
-*/    }
+    }
 
     /* Close the file reader */
-    fclose(fileRead);
+    fclose(filePoint);
     return FALSE;
 }
+
+/* Create a new node before applying data */
+Node* createNode(Stock *data, Node *next)
+{
+    Node* newNode = malloc(sizeof(Node));
+
+    newNode->data = data;
+    newNode->next = next;
+
+    return newNode;
+}
+
+/* Point to the new node in the list */
+Node* prepareNode(Node *head, Stock *data)
+{
+    /* Call create node method */
+    Node* newNode = createNode(data,head);
+
+    /* The head will be set to this node */
+    head = newNode;
+    return head;
+}
+
+
+
 
 /**
  * Loads the coin file data into the system.
@@ -140,9 +194,40 @@ Boolean saveCoins(VmSystem * system)
  **/
 void displayItems(VmSystem * system)
 {
+    unsigned id;
+    unsigned name;
+    unsigned price;
+    unsigned dollar;
+    unsigned cent;
+    unsigned onHand;
+
+    Node * headNode;
+
+    printf("DEBUG");
+
+    printf("ID \t | Name \t\t | Available | Price\n");
+    printf("---------------------------------------------");
 
 
+    analyzeLinkedList(headNode);
 
+
+}
+
+/*
+    traverse the linked list
+*/
+void analyzeLinkedList(Node * headNode)
+{
+    Node* currentNode = headNode;
+    while(currentNode != NULL)
+    {
+        if (currentNode != NULL)
+            printf("%s ", currentNode->data->id);
+
+        /* Get the next node */
+        currentNode = currentNode->next;
+    }
 }
 
 /**

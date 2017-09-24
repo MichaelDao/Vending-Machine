@@ -24,5 +24,8 @@ void abortProgram(VmSystem * system);
 
 List* initializeList();
 
+Node* createNode(Stock *data, Node *next);
+Node* prepareNode(Node *head, Stock *data);
+void traverseList(Node * headNode);
 
 #endif

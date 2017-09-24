@@ -32,7 +32,7 @@ List* initializeList()
 
 
 /* Create a new node before applying data */
-Node* createNode(Stock *data, Node *next)
+Node* createNode(Node *next, Stock *data)
 {
     Node* newNode = malloc(sizeof(Node));
 
@@ -48,29 +48,23 @@ Node* createNode(Stock *data, Node *next)
     return newNode;
 }
 
-/* Point to the new node in the list */
 Node* prepareNode(Node *head, Stock *data)
 {
     /* Call create node method */
-    Node* newNode = createNode(data, head);
+    Node* newNode = createNode(head, data);
 
     /* The head will be set to this node */
     head = newNode;
     return head;
 }
 
-/*
-    traverse the linked list
-*/
 void traverseList(Node * headNode)
 {
-    Node* currentNode;
-    currentNode = headNode;
+    Node* currentNode = currentNode = headNode;
 
     while(currentNode != NULL)
     {
-        if (currentNode != NULL)
-            printf("%s ", currentNode->data->id);
+        printf("%s ", currentNode->data->id);
 
         /* Get the next node */
         currentNode = currentNode->next;

@@ -13,22 +13,6 @@
 
 void initMenu(MenuItem * menu)
 {
-    /* initialize menu function */
-    /* Main menu */
-    menu[0].function = displayItems;
-    menu[1].function = purchaseItem;
-    menu[2].function = saveAndExit;
-
-    /* Admin menu */
-    menu[3].function = addItem;
-    menu[4].function = removeItem;
-    menu[5].function = displayCoins;
-    menu[6].function = resetStock;
-    menu[7].function = resetCoins;
-    menu[8].function = abortProgram;
-
-
-
     printf("Main Menu:\n"
            "1. Display items\n"
            "2. Purchase Items\n"

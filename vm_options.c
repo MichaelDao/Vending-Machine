@@ -65,13 +65,18 @@ Boolean loadStock(VmSystem * system, const char * fileName)
     /* strol pointer */
     char *ptr;
     /* Holds strol result */
-    int stringConvert;
+    unsigned stringConvert;
 
     /* For loop index */
     int x;
 
-    Node *node;
-    Stock *data;
+
+
+
+    /* Allocate memory to Node and Stock */
+    Node *head = malloc(sizeof(Node));
+    Stock *data = malloc(sizeof(Stock));
+    Stock *tmp = malloc(sizeof(Stock));
 
 
     /* Read the file TODO Instead of string name, try to use filename char */
@@ -79,13 +84,10 @@ Boolean loadStock(VmSystem * system, const char * fileName)
 
 
 
+
     /* read each line in the text file */
     while (fgets(buff, sizeof(buff), stockFile))
     {
-        /* Allocate memory to Node and Stock */
-        node = malloc(sizeof(Node));
-        data = malloc(sizeof(Stock));
-
         /* Grab the whole line for processing */
         token = strtok(buff, delimit);
 
@@ -95,22 +97,24 @@ Boolean loadStock(VmSystem * system, const char * fileName)
             switch (x)
             {
                 case 0:
-                    strcpy(data->id, token);
+                    strcpy(tmp->id, token);
                     break;
                 case 1:
-                    strcpy(data->name, token);
+                    strcpy(tmp->name, token);
                     break;
                 case 2:
-                    strcpy(data->desc, token);
+                    strcpy(tmp->desc, token);
                     break;
                 case 3:
                     stringConvert = strtol(token, &ptr, 0);
-                    data->price.dollars = stringConvert;
+                    tmp->price.dollars = stringConvert;
                     break;
                 case 4:
                     stringConvert = strtol(token, &ptr, 0);
-                    data->onHand = stringConvert;
+                    tmp->onHand = stringConvert;
                     break;
+                default :
+                    printf("debug" );
             }
 
             printf( " %s\n", token ); /*DEBUG*/
@@ -119,8 +123,14 @@ Boolean loadStock(VmSystem * system, const char * fileName)
             token = strtok(NULL, delimit);
         }
 
+        tmp = data;
+        /* Create the head node */
+        head = prepareNode(head, tmp);
+
         printf("==========================\n"); /*DEBUG */
     }
+
+    system->itemList->head = head;
 
     /* Close the file reader */
     fclose(stockFile);
@@ -133,6 +143,8 @@ Boolean loadStock(VmSystem * system, const char * fileName)
  **/
 Boolean loadCoins(VmSystem * system, const char * fileName)
 {
+
+
 }
 
 /**
@@ -157,14 +169,12 @@ Boolean saveCoins(VmSystem * system)
  **/
 void displayItems(VmSystem * system)
 {
-
-    Node * headNode;
-
     printf("DEBUG\n");
 
     printf("ID \t | Name \t\t | Available | Price\n");
-    printf("---------------------------------------------");
+    printf("---------------------------------------------\n");
 
+    traverseList(system->itemList->head);
 
 }
 

@@ -14,6 +14,7 @@
 Boolean systemInit(VmSystem * system)
 {
     system->itemList = initializeList();
+
     system->coinFileName = NULL;
     system->stockFileName = NULL;
 
@@ -26,7 +27,10 @@ Boolean systemInit(VmSystem * system)
  * and run it through valgrind.
  **/
 void systemFree(VmSystem * system)
-{ }
+{
+
+
+}
 
 /**
  * Loads the stock and coin data into the system. You will also need to assign
@@ -48,39 +52,48 @@ Boolean loadData(
  **/
 Boolean loadStock(VmSystem * system, const char * fileName)
 {
-    /* DECLARING VARIABLES */
-    FILE *filePoint; /* File reader pointer */
+    /* text file pointer */
+    FILE *stockFile;
 
-    char buff[255]; /* Store text line */
-    char *token; /* Store individual text */
-    const char delimit[2] = "|"; /* delimiter */
+    /* Store text line */
+    char buff[255];
+    /* Store individual text */
+    char *token;
+    /* delimiter */
+    const char delimit[2] = "|";
 
-    char *ptr; /* strol pointer */
-    int stringConvert; /* Holds strol result */
+    /* strol pointer */
+    char *ptr;
+    /* Holds strol result */
+    int stringConvert;
 
-    int x; /* for loop index */
+    /* For loop index */
+    int x;
 
-
-
-    Node *head = NULL; /* The first node in the list */
-    Node *tmp = NULL;
-
+    Node *node;
     Stock *data;
 
-    /* THE LOADING PROCESS */
 
     /* Read the file TODO Instead of string name, try to use filename char */
-    filePoint = fopen("stock.dat", "r");
+    stockFile = fopen("stock.dat", "r");
+
+
 
     /* read each line in the text file */
-    while (fgets(buff, sizeof(buff), filePoint))
+    while (fgets(buff, sizeof(buff), stockFile))
     {
+        /* Allocate memory to Node and Stock */
+        node = malloc(sizeof(Node));
+        data = malloc(sizeof(Stock));
+
         /* Grab the whole line for processing */
         token = strtok(buff, delimit);
 
         /* walk through all tokens */
-        for(x=0; token != NULL; x++ ) {
-            switch (x) {
+        for(x=0; token != NULL; x++ )
+        {
+            switch (x)
+            {
                 case 0:
                     strcpy(data->id, token);
                     break;
@@ -110,7 +123,7 @@ Boolean loadStock(VmSystem * system, const char * fileName)
     }
 
     /* Close the file reader */
-    fclose(filePoint);
+    fclose(stockFile);
 
     return FALSE;
 }

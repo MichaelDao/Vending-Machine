@@ -14,20 +14,20 @@
 List* initializeList()
 {
     /* Allocate memory to list */
-    List* vmList = malloc(sizeof(vmList));
+    List* vendingList = malloc(sizeof(vendingList));
 
     /* exit if vmList doesnt exist */
-    if (vmList == NULL)
+    if (vendingList == NULL)
         exit(EXIT_FAILURE);
 
     else
     {/* Assign default values */
-        vmList->head = NULL;
-        vmList->size = 0;
+        vendingList->head = NULL;
+        vendingList->size = 0;
     }
 
     /* Return the initialized list */
-    return vmList;
+    return vendingList;
 }
 
 
@@ -66,6 +66,7 @@ void traverseList(Node * headNode)
 {
     Node* currentNode;
     currentNode = headNode;
+
     while(currentNode != NULL)
     {
         if (currentNode != NULL)

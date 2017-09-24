@@ -174,8 +174,20 @@ void displayItems(VmSystem * system)
     printf("ID \t | Name \t\t | Available | Price\n");
     printf("---------------------------------------------\n");
 
-    traverseList(system->itemList->head);
+    Node* currentNode = system->itemList->head;
 
+    while(currentNode->data != NULL)
+    {
+        printf("%s ", currentNode->data->id);
+        printf("%s ", currentNode->data->name);
+        printf("%s ", currentNode->data->desc);
+        printf("%d ", currentNode->data->price);
+        printf("%d\n", currentNode->data->onHand);
+
+
+        /* Get the next node */
+        currentNode = currentNode->next;
+    }
 }
 
 

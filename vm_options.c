@@ -171,17 +171,16 @@ void displayItems(VmSystem * system)
 {
     printf("DEBUG\n");
 
-    printf("ID \t | Name \t\t | Available | Price\n");
+    printf("ID \t  | Name \t\t| Available | Price\n");
     printf("---------------------------------------------\n");
 
     Node* currentNode = system->itemList->head;
 
     while(currentNode->data != NULL)
     {
-        printf("%s ", currentNode->data->id);
-        printf("%s ", currentNode->data->name);
-        printf("%s ", currentNode->data->desc);
-        printf("%d ", currentNode->data->price);
+        printf("%s | ", currentNode->data->id);
+        printf("%s \t| ", currentNode->data->name);
+        printf("%d \t\t| ", currentNode->data->price);
         printf("%d\n", currentNode->data->onHand);
 
 

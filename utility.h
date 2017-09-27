@@ -1,12 +1,25 @@
 #ifndef UTILITY_H
 #define UTILITY_H
 
+/******************************************************************************
+
+** Student Name: <Michael Dao>
+
+** Student Number: <s3668300>
+
+** Date of submission: <NULL>
+
+** Course: COSC1076 / COSC2207, Semester 2, 2017
+
+******************************************************************************/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 #include <time.h>
 #include <assert.h>
+
 
 typedef enum boolean
 {

@@ -1,3 +1,15 @@
+/******************************************************************************
+
+** Student Name: <Michael Dao>
+
+** Student Number: <s3668300>
+
+** Date of submission: <NULL>
+
+** Course: COSC1076 / COSC2207, Semester 2, 2017
+
+******************************************************************************/
+
 #include "vm_options.h"
 
 /**
@@ -78,12 +90,8 @@ Boolean loadStock(VmSystem * system, const char * fileName)
     Stock *data = malloc(sizeof(Stock));
     Stock *tmp = malloc(sizeof(Stock));
 
-
     /* Read the file TODO Instead of string name, try to use filename char */
     stockFile = fopen("stock.dat", "r");
-
-
-
 
     /* read each line in the text file */
     while (fgets(buff, sizeof(buff), stockFile))
@@ -127,10 +135,11 @@ Boolean loadStock(VmSystem * system, const char * fileName)
         /* Create the head node */
         head = prepareNode(head, tmp);
 
+        system->itemList->head = head;
+
         printf("==========================\n"); /*DEBUG */
     }
 
-    system->itemList->head = head;
 
     /* Close the file reader */
     fclose(stockFile);

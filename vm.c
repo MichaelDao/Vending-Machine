@@ -17,22 +17,35 @@ int main(int argc, char ** argv)
     /* Create structures for calling */
     MenuItem menu;
     VmSystem system;
+    MenuFunction option;
+
+    /* Initialize menu */
+    initMenu(&menu);
 
     /* Initialize the system TODO Ensure boolean is used*/
     systemInit(&system);
+
+
 
     /* Constant variables for file names TODO make it 'argc' and 'argv' instead of manual names*/
     const char stockFileName = "stock.dat";
     const char coinsFileName = "coins.dat";
 
-    /* Print menu */
-    initMenu(&menu);
-
     /* Load the files */
     loadData(&system, stockFileName, coinsFileName);
 
-    displayItems(&system);
+    for(;;)
+    {
+        /* Print menu and ask for choice */
+        option = getMenuChoice(&menu);
 
+        if (option == saveAndExit)
+            break;
+        else if (option == NULL)
+            continue;
+        else
+            (*option)(&system);
+    }
 
     /* Exit the program */
     printf("Goodbye. \n\n");

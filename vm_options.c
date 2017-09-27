@@ -20,13 +20,14 @@
  **/
 
 /**
- * Initialise the system to a known safe state. Look at the structure
- * defined in vm_system.h.
+ * Initialise the system to a known safe state.
  **/
 Boolean systemInit(VmSystem * system)
 {
+    /* Initialize the linked list */
     system->itemList = initializeList();
 
+    /* Initialize the file names */
     system->coinFileName = NULL;
     system->stockFileName = NULL;
 
@@ -40,8 +41,7 @@ Boolean systemInit(VmSystem * system)
  **/
 void systemFree(VmSystem * system)
 {
-
-
+    free(system->itemList);
 }
 
 /**
@@ -87,7 +87,7 @@ Boolean loadStock(VmSystem * system, const char * fileName)
 
     /* Allocate memory to Node and Stock */
     Node *head = malloc(sizeof(Node));
-    Stock *data = malloc(sizeof(Stock));
+
     Stock *tmp = malloc(sizeof(Stock));
 
     /* Read the file TODO Instead of string name, try to use filename char */
@@ -114,11 +114,11 @@ Boolean loadStock(VmSystem * system, const char * fileName)
                     strcpy(tmp->desc, token);
                     break;
                 case 3:
-                    stringConvert = strtol(token, &ptr, 0);
+                    stringConvert = (unsigned)strtol(token, &ptr, 0);
                     tmp->price.dollars = stringConvert;
                     break;
                 case 4:
-                    stringConvert = strtol(token, &ptr, 0);
+                    stringConvert = (unsigned)strtol(token, &ptr, 0);
                     tmp->onHand = stringConvert;
                     break;
                 default :
@@ -130,9 +130,9 @@ Boolean loadStock(VmSystem * system, const char * fileName)
             /* move to the next token */
             token = strtok(NULL, delimit);
         }
-
+/*
         tmp = data;
-        /* Create the head node */
+  */      /* Create the head node */
         head = prepareNode(head, tmp);
 
         system->itemList->head = head;

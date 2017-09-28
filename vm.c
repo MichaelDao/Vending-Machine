@@ -11,28 +11,31 @@
 ******************************************************************************/
 
 #include "vm.h"
+#define MENU_LENGTH 9
+
 
 int main(int argc, char ** argv)
 {
+    /* DEBUG SETTING IT UP MANUALLY */
+    argv[1] = "stock.dat";
+    argv[2] = "coins.dat";
+
     /* Create structures for calling */
-    MenuItem menu;
+    MenuItem menu[MENU_LENGTH];
     VmSystem system;
     MenuFunction option;
-
-    /* Initialize menu */
-    initMenu(&menu);
 
     /* Initialize the system TODO Ensure boolean is used*/
     systemInit(&system);
 
-
-
-    /* Constant variables for file names TODO make it 'argc' and 'argv' instead of manual names*/
-    const char stockFileName = "stock.dat";
-    const char coinsFileName = "coins.dat";
-
     /* Load the files */
-    loadData(&system, stockFileName, coinsFileName);
+    loadData(&system, argv[1], argv[2]);
+
+    /* Load stock file */
+    loadStock(&system, system.stockFileName);
+
+    /* Initialize menu */
+    initMenu(&menu);
 
     for(;;)
     {
@@ -48,6 +51,6 @@ int main(int argc, char ** argv)
     }
 
     /* Exit the program */
-    printf("Goodbye. \n\n");
+    printf("\nGoodbye. \n\n");
     return EXIT_SUCCESS;
 }

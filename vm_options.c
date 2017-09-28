@@ -24,6 +24,9 @@
  **/
 Boolean systemInit(VmSystem * system)
 {
+    /* Initialize the coin */
+    initializeCoins(system->cashRegister);
+
     /* Initialize the linked list */
     system->itemList = initializeList();
 
@@ -53,9 +56,8 @@ void systemFree(VmSystem * system)
 Boolean loadData(
     VmSystem * system, const char * stockFileName, const char * coinsFileName)
 {
-    /* Load stock file */
-    loadStock(system, stockFileName);
-
+    system->stockFileName = stockFileName;
+    system->coinFileName = coinsFileName;
     return FALSE;
 }
 
@@ -68,7 +70,7 @@ Boolean loadStock(VmSystem * system, const char * fileName)
     FILE *stockFile;
 
     /* Store text line */
-    char buff[255];
+    char buff[DESC_LEN];
 
     /* delimiter */
     const char delimit[2] = "|";
@@ -83,7 +85,7 @@ Boolean loadStock(VmSystem * system, const char * fileName)
     Stock *stock = malloc(sizeof(Stock));
 
     /* Read the file TODO Instead of string name, try to use filename char */
-    stockFile = fopen("stock.dat", "r");
+    stockFile = fopen(fileName, "r");
 
     /* read each line in the text file */
     while (fgets(buff, sizeof(buff), stockFile))
@@ -137,7 +139,7 @@ Boolean saveCoins(VmSystem * system)
 void displayItems(VmSystem * system)
 {
 
-    printf("\nID \t  | Name \t\t| Available | Price\n");
+    printf("\nID \t  | Name \t\t\t\t| Available | Price\n");
     printf("---------------------------------------------\n");
 
     Node* currentNode = system->itemList->head;
@@ -145,7 +147,7 @@ void displayItems(VmSystem * system)
     while(currentNode != NULL)
     {
         printf("%s | ", currentNode->data->id);
-        printf("%s \t| ", currentNode->data->name);
+        printf("%s \t\t\t| ", currentNode->data->name);
         printf("%d \t\t| ", currentNode->data->price);
         printf("%d\n", currentNode->data->onHand);
 
@@ -153,8 +155,19 @@ void displayItems(VmSystem * system)
         /* Get the next node */
         currentNode = currentNode->next;
     }
+
+    pressEnterToContinue();
 }
 
+void pressEnterToContinue()
+{
+    int myChar = 0;
+
+    printf("\nPlease press ENTER to continue\n");
+
+    while (myChar != '\r' && myChar  != '\n')
+        myChar = getchar();
+}
 
 
 /**

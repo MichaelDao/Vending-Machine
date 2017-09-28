@@ -45,8 +45,6 @@ void initMenu(MenuItem * menu)
     menu[6].function = resetStock;
     menu[7].function = resetCoins;
     menu[8].function = abortProgram;
-
-
 }
 
 void printMenu(MenuItem * menu)
@@ -59,7 +57,7 @@ void printMenu(MenuItem * menu)
         if (x == 0)
             printf("\nMain Menu:\n");
         else if (x == 3)
-            printf("Administrator-Only Menu:\n");
+            printf("\nAdministrator-Only Menu:\n");
 
         printf("%s\n", menu[x].text);
 

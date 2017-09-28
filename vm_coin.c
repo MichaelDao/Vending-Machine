@@ -23,8 +23,20 @@
  * convert Denomination to coin value, deducting coins from register, etc...
  */
 
-Coin* initializeCoins()
+Coin* initializeCoins(Coin * cashRegister)
 {
-    Denomination denom = FIVE_CENTS;
+    Denomination value = FIVE_CENTS;
     int x;
+
+    for (x = 0; x < NUM_DENOMS; x++)
+    {
+        /* Apply the denomination enum */
+        cashRegister[x].denom = value;
+
+        /* Apply the default coin count */
+        cashRegister[x].count = DEFAULT_COIN_COUNT;
+
+        /* Increment the denomination */
+        value++;
+    }
 }

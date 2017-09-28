@@ -59,7 +59,7 @@ void printMenu(MenuItem * menu)
         if (x == 0)
             printf("\nMain Menu:\n");
         else if (x == 3)
-            printf("\nAdministrator-Only Menu:\n");
+            printf("Administrator-Only Menu:\n");
 
         printf("%s\n", menu[x].text);
 

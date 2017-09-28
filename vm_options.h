@@ -39,5 +39,6 @@ List* initializeList();
 Node* createNode(Stock *data, Node *next);
 Node* prepareNode(Node *head, Stock *data);
 void traverseList(Node * headNode);
+void splitToken(char *token, Stock *stock);
 
 #endif

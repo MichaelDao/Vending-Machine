@@ -69,26 +69,18 @@ Boolean loadStock(VmSystem * system, const char * fileName)
 
     /* Store text line */
     char buff[255];
-    /* Store individual text */
-    char *token;
+
     /* delimiter */
     const char delimit[2] = "|";
 
-    /* strol pointer */
-    char *ptr;
-    /* Holds strol result */
-    unsigned stringConvert;
-
-    /* For loop index */
-    int x;
-
-
+    /* Store individual text */
+    char *token;
 
 
     /* Allocate memory to Node and Stock */
-    Node *head = malloc(sizeof(Node));
+    List *vendingList = malloc(sizeof(List));
 
-    Stock *tmp = malloc(sizeof(Stock));
+    Stock *stock = malloc(sizeof(Stock));
 
     /* Read the file TODO Instead of string name, try to use filename char */
     stockFile = fopen("stock.dat", "r");
@@ -99,45 +91,11 @@ Boolean loadStock(VmSystem * system, const char * fileName)
         /* Grab the whole line for processing */
         token = strtok(buff, delimit);
 
-        /* walk through all tokens */
-        for(x=0; token != NULL; x++ )
-        {
-            switch (x)
-            {
-                case 0:
-                    strcpy(tmp->id, token);
-                    break;
-                case 1:
-                    strcpy(tmp->name, token);
-                    break;
-                case 2:
-                    strcpy(tmp->desc, token);
-                    break;
-                case 3:
-                    stringConvert = (unsigned)strtol(token, &ptr, 0);
-                    tmp->price.dollars = stringConvert;
-                    break;
-                case 4:
-                    stringConvert = (unsigned)strtol(token, &ptr, 0);
-                    tmp->onHand = stringConvert;
-                    break;
-                default :
-                    printf("debug" );
-            }
+        /* Read the token */
+        splitToken(token,stock);
 
-            printf( " %s\n", token ); /*DEBUG*/
-
-            /* move to the next token */
-            token = strtok(NULL, delimit);
-        }
-/*
-        tmp = data;
-  */      /* Create the head node */
-        head = prepareNode(head, tmp);
-
-        system->itemList->head = head;
-
-        printf("==========================\n"); /*DEBUG */
+        /* Create the node and update the itemList*/
+        system->itemList = createNode(vendingList, stock);
     }
 
 
@@ -178,14 +136,13 @@ Boolean saveCoins(VmSystem * system)
  **/
 void displayItems(VmSystem * system)
 {
-    printf("DEBUG\n");
 
-    printf("ID \t  | Name \t\t| Available | Price\n");
+    printf("\nID \t  | Name \t\t| Available | Price\n");
     printf("---------------------------------------------\n");
 
     Node* currentNode = system->itemList->head;
 
-    while(currentNode->data != NULL)
+    while(currentNode != NULL)
     {
         printf("%s | ", currentNode->data->id);
         printf("%s \t| ", currentNode->data->name);

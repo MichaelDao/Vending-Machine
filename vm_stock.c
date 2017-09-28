@@ -44,9 +44,12 @@ List* initializeList()
 
 
 /* Create a new node before applying data */
-Node* createNode(Node *next, Stock *data)
+Node* createNode(List *vendingList, Stock *data)
 {
-    Node* newNode = malloc(sizeof(Node));
+    Node * previousNode;
+    Node * currentNode;
+
+    Node* newNode = malloc(sizeof(newNode));
 
     if(newNode == NULL)
     {
@@ -54,31 +57,93 @@ Node* createNode(Node *next, Stock *data)
         exit(0);
     }
 
-    newNode->data = data;
-    newNode->next = next;
+    /* Allocate memory to the newNode */
+    newNode->data = malloc(sizeof(*newNode->data));
 
-    return newNode;
-}
+    if(newNode->data == NULL)
+    {
+        free(newNode);
+        printf("Error creating node");
+        exit(0);
+    }
 
-Node* prepareNode(Node *head, Stock *data)
-{
-    /* Call create node method */
-    Node* newNode = createNode(head, data);
+    /* Apply the data to the newNode */
+    *newNode->data = *data;
 
-    /* The head will be set to this node */
-    head = newNode;
-    return head;
-}
+    previousNode = NULL;
 
-void traverseList(Node * headNode)
-{
-    Node* currentNode = currentNode = headNode;
+    currentNode = vendingList->head;
 
+
+    /* Only when there is a head */
     while(currentNode != NULL)
     {
-        printf("%s ", currentNode->data->id);
-
-        /* Get the next node */
+        previousNode = currentNode;
         currentNode = currentNode->next;
+    }
+
+    /* When there is no head, assign the head node */
+    if(vendingList->head == NULL)
+        vendingList->head = newNode;
+
+    else if(previousNode == NULL)
+    {
+        /* Inserting at the head. */
+        newNode->next = vendingList->head;
+        vendingList->head = newNode;
+    }
+    else
+    {
+        previousNode->next = newNode;
+        newNode->next = currentNode;
+    }
+
+    /* Increment the size integer */
+    vendingList->size++;
+
+    return vendingList;
+}
+
+void splitToken(char *token, Stock *stock)
+{
+
+
+    /* strol pointer */
+    char *ptr;
+    /* Holds strol result */
+    unsigned stringConvert;
+    const char delimit[2] = "|";
+
+    /* For loop index */
+    int x;
+
+    /* walk through all tokens */
+    for(x=0; token != NULL; x++ )
+    {
+        switch (x)
+        {
+            case 0:
+                strcpy(stock->id, token);
+                break;
+            case 1:
+                strcpy(stock->name, token);
+                break;
+            case 2:
+                strcpy(stock->desc, token);
+                break;
+            case 3:
+                stringConvert = (unsigned)strtol(token, &ptr, 0);
+                stock->price.dollars = stringConvert;
+                break;
+            case 4:
+                stringConvert = (unsigned)strtol(token, &ptr, 0);
+                stock->onHand = stringConvert;
+                break;
+            default :
+                printf("default");
+        }
+
+        /* move to the next token */
+        token = strtok(NULL, delimit);
     }
 }

@@ -25,18 +25,15 @@
 
 Coin* initializeCoins(Coin * cashRegister)
 {
-    Denomination value = FIVE_CENTS;
     int x;
+    Denomination value = FIVE_CENTS;
 
     for (x = 0; x < NUM_DENOMS; x++)
     {
-        /* Apply the denomination enum */
-        cashRegister[x].denom = value;
-
         /* Apply the default coin count */
         cashRegister[x].count = DEFAULT_COIN_COUNT;
 
-        /* Increment the denomination */
-        value++;
+        /* Apply the denomination and increment */
+        cashRegister[x].denom = value++;
     }
 }

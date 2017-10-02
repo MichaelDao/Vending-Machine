@@ -149,7 +149,7 @@ void displayItems(VmSystem * system)
         printf("%s | ", currentNode->data->id);
         printf("%s \t\t\t| ", currentNode->data->name);
         printf("%d \t\t| ", currentNode->data->onHand);
-        printf("$%d.%02d\n", currentNode->data->price.dollars,
+        printf("$ %d.%02d\n", currentNode->data->price.dollars,
                currentNode->data->price.cents);
 
 
@@ -211,25 +211,129 @@ void purchaseItem(VmSystem * system)
         /* Before passing the input, modify it */
         input[strlen(input) - 1] = '\0';
 
-
         purchaseItem = searchItemID(vendingList, input);
 
         if (purchaseItem == NULL)
         {
             printf("Could not find %s\n", input);
             continue;
-
         }
 
         printf("You have selected '%s %s' This will cost you $%d.%02d.\n",
                purchaseItem->data->name, purchaseItem->data->desc,
                purchaseItem->data->price.dollars, purchaseItem->data->price.cents);
 
+        printf("Please hand over the money – type in the value of each note/coin in cents.\n"
+               "Press enter on a new and empty line to cancel this purchase:\n");
+
+        /* If the item is purchased, update stock */
+        if (insertMoney(purchaseItem))
+        {
+            purchaseItem->data->onHand--;
+            printf("Please come back soon.\n");
+        }
+        else
+            /* refund and return to menu */
+            return;
+
         break;
     }
 }
 
+Boolean insertMoney(Node * purchaseItem)
+{
+    char input[ID_LEN + EXTRA_SPACES];
 
+    int base_10 = 10;
+    unsigned price;
+
+    int remainingDollars;
+    int remainingCents;
+
+    unsigned dollarExtract;
+    unsigned centExtract;
+
+    unsigned dollarTotal;
+    unsigned centTotal;
+
+    dollarTotal = 0;
+    centTotal = 0;
+
+    /* Setup temporary variables */
+    remainingDollars = purchaseItem->data->price.dollars;
+    remainingCents = purchaseItem->data->price.cents;
+
+    for (;;)
+    {
+        printf("You still need to give us $%d.%02d: ",
+               remainingDollars, remainingCents);
+
+        /* Take in user input */
+        fgets(input, sizeof(input), stdin);
+
+        /* If nothing is entered, return change and go back to the menu */
+        if (strcmp(input, "\n\0") == 0)
+        {
+            printf("\nReturning your money at a value of $%d.%02d\n",
+                   dollarTotal, centTotal);
+            return FALSE;
+        }
+
+        /* check buffer overflow */
+        if (input[strlen(input) - 1] != '\n')
+        {
+            printf("Wrong input, please try again!\n");
+            readRestOfLine();
+            continue;
+        }
+
+        /* Convert the input to an integer */
+        price = (unsigned) strtol(input, NULL, base_10);
+
+        dollarExtract = price / 100;
+        centExtract = price % 100;
+
+        if (price == 0)
+        {
+            printf("Error: Please enter a valid denomination\n");
+            continue;
+        }
+        else if (price == 5 || price == 10 || price == 20 || price == 50 ||
+                price == 100 || price == 200 || price == 500 || price == 1000)
+        {
+            /* Add on the running total */
+            dollarTotal += dollarExtract;
+            centTotal += centExtract;
+
+            /* Subtract the remaining value */
+            remainingDollars -= dollarExtract;
+            remainingCents -= centExtract;
+
+            if (remainingDollars == 0 )
+            {
+                printf("Thank you. Here is your %s.\n",
+                       purchaseItem->data->name);
+                return TRUE;
+
+            }
+            else if (remainingDollars < 0 )
+            {
+                /* Calculate the change owed and return it */
+                printf("\nThank you. Here is your %s, and your change of $%d.%02d.\n",
+                purchaseItem->data->name, abs(remainingDollars) - 1, 100 - remainingCents );
+                return TRUE;
+            }
+            else
+                /* Reloop for remaining value needed */
+                continue;
+        }
+        else
+        {
+            printf("Error: $%d.%02d is not a valid denomination of money.\n", dollarExtract, centExtract);
+            continue;
+        }
+    }
+}
 
 /**
  * You must save all data to the data files that were provided on the command

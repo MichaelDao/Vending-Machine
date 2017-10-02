@@ -42,5 +42,7 @@ List* initializeList();
 List* createNode(List * vendingList, Stock * data);
 void splitToken(char * token, Stock * stock);
 Node * searchItemID(List * vendingList, char * input);
+Boolean insertMoney(Node * purchaseItem);
+
 
 #endif

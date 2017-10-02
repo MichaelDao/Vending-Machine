@@ -16,14 +16,17 @@
 
 int main(int argc, char ** argv)
 {
-    /* DEBUG SETTING IT UP MANUALLY */
-    argv[1] = "stock.dat";
-    argv[2] = "coins.dat";
-
     /* Create structures for calling */
     MenuItem menu[MENU_LENGTH];
     VmSystem system;
     MenuFunction option;
+
+
+    /* DEBUG SETTING IT UP MANUALLY */
+/*
+    argv[1] = "stock.dat";
+    argv[2] = "coins.dat";
+*/
 
     /* Initialize the system TODO Ensure boolean is used*/
     systemInit(&system);
@@ -31,8 +34,15 @@ int main(int argc, char ** argv)
     /* Load the files */
     loadData(&system, argv[1], argv[2]);
 
+    if (system.stockFileName == NULL)
+    {
+        printf("\nError: file not found\n\n");
+        exit(0);
+    }
+
     /* Load stock file */
     loadStock(&system, system.stockFileName);
+
 
     /* Initialize menu */
     initMenu(menu);

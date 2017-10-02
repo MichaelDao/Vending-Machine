@@ -36,4 +36,5 @@ Coin* initializeCoins(Coin * cashRegister)
         /* Apply the denomination and increment */
         cashRegister[x].denom = value++;
     }
+    return NULL;
 }

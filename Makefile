@@ -1,15 +1,3 @@
-/******************************************************************************
-
-** Student Name: <Michael Dao>
-
-** Student Number: <s3668300>
-
-** Date of submission: <NULL>
-
-** Course: COSC1076 / COSC2207, Semester 2, 2017
-
-******************************************************************************/
-
 SOURCES=vm.c vm_menu.c vm_options.c vm_stock.c vm_coin.c utility.c
 HEADERS=vm.h vm_menu.h vm_options.h vm_stock.h vm_coin.h utility.h vm_system.h
 PROGRAM=vm

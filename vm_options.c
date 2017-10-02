@@ -112,8 +112,7 @@ Boolean loadStock(VmSystem * system, const char * fileName)
  **/
 Boolean loadCoins(VmSystem * system, const char * fileName)
 {
-
-
+    return FALSE;
 }
 
 /**
@@ -138,17 +137,19 @@ Boolean saveCoins(VmSystem * system)
  **/
 void displayItems(VmSystem * system)
 {
+    Node * currentNode;
 
-    printf("\nID \t  | Name \t\t\t\t| Available | Price\n");
+    printf("\nID    | Name | Available | Price\n");
     printf("---------------------------------------------\n");
 
-    Node* currentNode = system->itemList->head;
+
+    currentNode = system->itemList->head;
 
     while(currentNode != NULL)
     {
         printf("%s | ", currentNode->data->id);
-        printf("%s \t\t\t| ", currentNode->data->name);
-        printf("%d \t\t| ", currentNode->data->onHand);
+        printf("%s | ", currentNode->data->name);
+        printf("%d \t\t | ", currentNode->data->onHand);
         printf("$ %d.%02d\n", currentNode->data->price.dollars,
                currentNode->data->price.cents);
 
@@ -211,6 +212,7 @@ void purchaseItem(VmSystem * system)
         /* Before passing the input, modify it */
         input[strlen(input) - 1] = '\0';
 
+        /* TODO IF THERE IS NO STOCK LEFT DONT DO IT*/
         purchaseItem = searchItemID(vendingList, input);
 
         if (purchaseItem == NULL)

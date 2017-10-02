@@ -148,8 +148,9 @@ void displayItems(VmSystem * system)
     {
         printf("%s | ", currentNode->data->id);
         printf("%s \t\t\t| ", currentNode->data->name);
-        printf("%d \t\t| ", currentNode->data->price);
-        printf("%d\n", currentNode->data->onHand);
+        printf("%d \t\t| ", currentNode->data->onHand);
+        printf("$%d.%02d\n", currentNode->data->price.dollars,
+               currentNode->data->price.cents);
 
 
         /* Get the next node */
@@ -176,9 +177,59 @@ void pressEnterToContinue()
  **/
 void purchaseItem(VmSystem * system)
 {
+    char input[ID_LEN + EXTRA_SPACES];
+
+    Node * purchaseItem = NULL;
+
+    List * vendingList = system->itemList;
+
+    printf("\nPurchase Item\n");
+    printf("----------------\n");
+
+    for(;;)
+    {
+        printf("Please enter the ID of the item you would like to purchase: ");
+
+        /* Take in user input */
+        fgets(input, sizeof(input), stdin);
+
+        /* If nothing is entered, then return to menu */
+        if (strcmp(input, "\n\0") == 0)
+        {
+            printf("\nReturning to the main menu!\n");
+            return;
+        }
+
+        /* check buffer overflow */
+        if (input[strlen(input) - 1] != '\n')
+        {
+            printf("Wrong input, please try again!\n");
+            readRestOfLine();
+            continue;
+        }
+
+        /* Before passing the input, modify it */
+        input[strlen(input) - 1] = '\0';
 
 
+        purchaseItem = searchItemID(vendingList, input);
+
+        if (purchaseItem == NULL)
+        {
+            printf("Could not find %s\n", input);
+            continue;
+
+        }
+
+        printf("You have selected '%s %s' This will cost you $%d.%02d.\n",
+               purchaseItem->data->name, purchaseItem->data->desc,
+               purchaseItem->data->price.dollars, purchaseItem->data->price.cents);
+
+        break;
+    }
 }
+
+
 
 /**
  * You must save all data to the data files that were provided on the command

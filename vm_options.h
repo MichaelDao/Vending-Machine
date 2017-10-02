@@ -34,12 +34,13 @@ void resetStock(VmSystem * system);
 void resetCoins(VmSystem * system);
 void abortProgram(VmSystem * system);
 
-List* initializeList();
+void pressEnterToContinue();
 
-Node* createNode(Stock *data, Node *next);
-Node* prepareNode(Node *head, Stock *data);
-void traverseList(Node * headNode);
-void splitToken(char *token, Stock *stock);
 Coin* initializeCoins(Coin * cashRegister);
+
+List* initializeList();
+List* createNode(List * vendingList, Stock * data);
+void splitToken(char * token, Stock * stock);
+Node * searchItemID(List * vendingList, char * input);
 
 #endif

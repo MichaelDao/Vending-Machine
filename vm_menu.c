@@ -51,7 +51,6 @@ void printMenu(MenuItem * menu)
 {
     int x;
 
-
     for(x = 0; x < sizeof(menu); x++)
     {
         if (x == 0)
@@ -99,7 +98,6 @@ MenuFunction getMenuChoice(MenuItem * menu)
             return menu[chosenOption - 1].function;
         else
             printf("Invalid input, please try again\n");
-
     }
 
     return NULL;

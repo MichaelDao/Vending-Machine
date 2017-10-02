@@ -17,7 +17,7 @@
 
 /**
  * The default stock level that all new stock should start with and the value
- * to use when restting stock.
+ * to use when resetting stock.
  **/
 #define DEFAULT_STOCK_LEVEL 20
 

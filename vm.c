@@ -35,12 +35,12 @@ int main(int argc, char ** argv)
     loadStock(&system, system.stockFileName);
 
     /* Initialize menu */
-    initMenu(&menu);
+    initMenu(menu);
 
     for(;;)
     {
         /* Print menu and ask for choice */
-        option = getMenuChoice(&menu);
+        option = getMenuChoice(menu);
 
         if (option == saveAndExit)
             break;

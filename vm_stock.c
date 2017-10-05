@@ -74,10 +74,14 @@ List* createNode(List *vendingList, Stock *data)
 
     currentNode = vendingList->head;
 
-
-    /* Only when there is a head */
+    /*  when there is a head */
     while(currentNode != NULL)
     {
+        if(strcmp(newNode->data->name, currentNode->data->name) < 0)
+        {
+            break;
+        }
+
         previousNode = currentNode;
         currentNode = currentNode->next;
     }

@@ -23,10 +23,10 @@ int main(int argc, char ** argv)
 
 
     /* DEBUG SETTING IT UP MANUALLY */
-/*
+
     argv[1] = "stock.dat";
     argv[2] = "coins.dat";
-*/
+
 
     /* Initialize the system TODO Ensure boolean is used*/
     systemInit(&system);
@@ -42,6 +42,12 @@ int main(int argc, char ** argv)
 
     /* Load stock file */
     loadStock(&system, system.stockFileName);
+
+    /*
+     * To get full marks
+     * TODO 1. Make sure the names are sorted, not with the ID numbers
+     * TODO 2. Make sure the menu is displayed properly
+     */
 
 
     /* Initialize menu */

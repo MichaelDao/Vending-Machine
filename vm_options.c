@@ -161,15 +161,6 @@ void displayItems(VmSystem * system)
     pressEnterToContinue();
 }
 
-void pressEnterToContinue()
-{
-    int myChar = 0;
-
-    printf("\nPlease press ENTER to continue\n");
-
-    while (myChar != '\r' && myChar  != '\n')
-        myChar = getchar();
-}
 
 
 /**
@@ -192,22 +183,10 @@ void purchaseItem(VmSystem * system)
         printf("Please enter the ID of the item you would like to purchase: ");
 
         /* Take in user input */
-        fgets(input, sizeof(input), stdin);
-
-        /* If nothing is entered, then return to menu */
-        if (strcmp(input, "\n\0") == 0)
-        {
-            printf("\nReturning to the main menu!\n");
+        /*fgets(input, sizeof(input), stdin);
+*/
+        if(!checkInput(input))
             return;
-        }
-
-        /* check buffer overflow */
-        if (input[strlen(input) - 1] != '\n')
-        {
-            printf("Wrong input, please try again!\n");
-            readRestOfLine();
-            continue;
-        }
 
         /* Before passing the input, modify it */
         input[strlen(input) - 1] = '\0';
@@ -243,105 +222,9 @@ void purchaseItem(VmSystem * system)
 
         break;
     }
-}
 
-Boolean insertMoney(Node * purchaseItem)
-{
-    char input[ID_LEN + EXTRA_SPACES];
-
-    int base_10 = 10;
-    unsigned price;
-
-    int remainingDollars;
-    int remainingCents;
-
-    unsigned dollarExtract;
-    unsigned centExtract;
-
-    unsigned dollarTotal;
-    unsigned centTotal;
-
-    dollarTotal = 0;
-    centTotal = 0;
-
-    /* Setup temporary variables */
-    remainingDollars = purchaseItem->data->price.dollars;
-    remainingCents = purchaseItem->data->price.cents;
-
-    for (;;)
-    {
-        printf("You still need to give us $%d.%02d: ",
-               remainingDollars, remainingCents);
-
-        /* Take in user input */
-        fgets(input, sizeof(input), stdin);
-
-        /* If nothing is entered, return change and go back to the menu */
-        if (strcmp(input, "\n\0") == 0)
-        {
-            printf("\nReturning your money at a value of $%d.%02d\n",
-                   dollarTotal, centTotal);
-            return FALSE;
-        }
-
-        /* check buffer overflow */
-        if (input[strlen(input) - 1] != '\n')
-        {
-            printf("Wrong input, please try again!\n");
-            readRestOfLine();
-            continue;
-        }
-
-        /* Convert the input to an integer */
-        price = (unsigned) strtol(input, NULL, base_10);
-
-        dollarExtract = price / 100;
-        centExtract = price % 100;
-
-        if (price == 0)
-        {
-            printf("Error: Please enter a valid denomination\n");
-            continue;
-        }
-        else if (price == 5 || price == 10 || price == 20 || price == 50 ||
-                price == 100 || price == 200 || price == 500 || price == 1000)
-        {
-            /* Add on the running total */
-            dollarTotal += dollarExtract;
-            centTotal += centExtract;
-
-            /* Subtract the remaining value */
-            remainingDollars -= dollarExtract;
-            remainingCents -= centExtract;
-
-            if (remainingDollars == 0 )
-            {
-                printf("Thank you. Here is your %s.\n",
-                       purchaseItem->data->name);
-                return TRUE;
-
-            }
-            else if (remainingDollars < 0 )
-            {
-                /* Calculate the change owed and return it */
-                printf("\nThank you. Here is your %s, "
-                               "and your change of $%d.%02d.\n",
-                       purchaseItem->data->name, abs(remainingDollars) - 1,
-                       100 - remainingCents );
-
-                return TRUE;
-            }
-            else
-                /* Re-loop for remaining value needed */
-                continue;
-        }
-        else
-        {
-            printf("Error: $%d.%02d is not a valid denomination of money.\n",
-                   dollarExtract, centExtract);
-            continue;
-        }
-    }
+    /* Prompt to exit */
+    pressEnterToContinue();
 }
 
 /**
@@ -396,90 +279,45 @@ void addItem(VmSystem * system)
     printf("This new meal item will have the Item id of %s.\n", uniqueId);
 
     /* Record the input for Item Name */
-    for(;;)
-    {
-        /* Take in item name input */
-        printf("Enter the item name: ");
-        fgets(inputName, sizeof(inputName), stdin);
 
-        /* If nothing is entered, return to menu */
-        if (strcmp(inputName, "\n\0") == 0)
-        {
-            printf("\nReturning to the main menu!\n");
-            return;
-        }
+    /* Take in item name input */
+    printf("Enter the item name: ");
+    /*fgets(inputName, sizeof(inputName), stdin);*/
 
-        /* check buffer overflow */
-        else if (inputName[strlen(inputName) - 1] != '\n')
-        {
-            printf("Wrong input, please try again!\n");
-            readRestOfLine();
-            continue;
-        }
+    if(!checkInput(inputName))
+        return;
 
-        /* Complete the string for name */
-        inputName[strlen(inputName) - 1] = '\0';
+    /* Complete the string for name */
+    inputName[strlen(inputName) - 1] = '\0';
 
-        /* Assign the name to the stock node */
-        strcpy(stock->name, inputName);
-
-        /* Exit loop */
-        break;
-    }
+    /* Assign the name to the stock node */
+    strcpy(stock->name, inputName);
 
     /* Record the input for Item Description */
-    for(;;)
-    {
-        /* Take in item description via fgets */
-        printf("Enter the item description: ");
-        fgets(inputDesc, sizeof(inputDesc), stdin);
+    /* Take in item description via fgets */
+    printf("Enter the item description: ");
+    /*fgets(inputDesc, sizeof(inputDesc), stdin);*/
 
-        /* If nothing is entered, then return to menu */
-        if (strcmp(inputDesc, "\n\0") == 0)
-        {
-            printf("\nReturning to the main menu!\n");
-            return;
-        }
+    if(!checkInput(inputDesc))
+        return;
 
-        /* check buffer overflow */
-        else if (inputDesc[strlen(inputDesc) - 1] != '\n')
-        {
-            printf("Wrong input, please try again!\n");
-            readRestOfLine();
-            continue;
-        }
+    /* complete string for description */
+    inputDesc[strlen(inputDesc) - 1] = '\0';
 
-        /* complete string for description */
-        inputDesc[strlen(inputDesc) - 1] = '\0';
+    /* Assign description to stock node */
+    strcpy(stock->desc, inputDesc);
 
-        /* Assign description to stock node */
-        strcpy(stock->desc, inputDesc);
 
-        /* Exit loop */
-        break;
-    }
 
     /* Record the input for Item price */
     for(;;)
     {
         /* Take in item price from user input */
         printf("Enter the price for this item: ");
-        fgets(inputPrice, sizeof(inputPrice), stdin);
+        /*fgets(inputPrice, sizeof(inputPrice), stdin);*/
 
-        /* If nothing is entered, then return to menu */
-        if (strcmp(inputPrice, "\n\0") == 0)
-        {
-            printf("\nReturning to the main menu!\n");
+        if(!checkInput(inputPrice))
             return;
-        }
-
-        /* check buffer overflow */
-        else if (inputPrice[strlen(inputPrice) - 1] != '\n')
-        {
-            printf("Wrong input, please try again!\n");
-            readRestOfLine();
-            continue;
-        }
 
         /* Complete the input string */
         inputPrice[strlen(inputPrice) - 1] = '\0';
@@ -521,7 +359,7 @@ void addItem(VmSystem * system)
     system->itemList = createNode(vendingList, stock);
 
     /* Confirm creation of node */
-    printf("This item “%s, %s” has now been added to the menu.",
+    printf("This item “%s, %s” has now been added to the menu.\n",
            inputName, inputDesc);
 
     /* Prompt to exit */
@@ -583,8 +421,41 @@ char * generateID(List * vendingList, char uniqueId[])
  **/
 void removeItem(VmSystem * system)
 {
+    char input[ID_LEN + EXTRA_SPACES];
+
+
     printf("Enter the item id of the item to remove from the menu: ");
 
+    if(!checkInput(input))
+        return;
+
+    /* Before passing the input, modify it */
+    input[strlen(input) - 1] = '\0';
+}
+
+Boolean checkInput(char * input)
+{
+    for(;;)
+    {
+        /* Take in user input */
+        fgets(input, sizeof(input), stdin);
+
+        /* If nothing is entered, then return to menu */
+        if (strcmp(input, "\n\0") == 0)
+        {
+            printf("\nReturning to the main menu!\n");
+            return FALSE;
+        }
+
+        /* check buffer overflow */
+        else if (input[strlen(input) - 1] != '\n')
+        {
+            printf("Wrong input, please try again!\n");
+            readRestOfLine();
+            continue;
+        }
+        return TRUE;
+    }
 }
 
 /**
@@ -608,9 +479,19 @@ void displayCoins(VmSystem * system)
  **/
 void resetStock(VmSystem * system)
 {
+    Node * cursor = system->itemList->head;
 
+    while(cursor != NULL)
+    {
+        cursor->data->onHand = DEFAULT_STOCK_LEVEL;
+        cursor = cursor->next;
+    }
 
+    printf("All stock has been reset to the default level of %d\n",
+           DEFAULT_STOCK_LEVEL);
 
+    /* Prompt to exit */
+    pressEnterToContinue();
 }
 
 /**
@@ -640,3 +521,16 @@ void abortProgram(VmSystem * system)
     return exit(0);
 
 }
+
+
+void pressEnterToContinue()
+{
+    int myChar = 0;
+
+    printf("\nPlease press ENTER to continue\n");
+
+    while (myChar != '\r' && myChar  != '\n')
+        myChar = getchar();
+}
+
+

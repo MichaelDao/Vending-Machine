@@ -183,3 +183,9 @@ Node * searchItemID(List * vendingList, char * input)
     }
     return NULL;
 }
+
+Node * removeNode(List * vendingList, char * input)
+{
+    /* If first node */
+
+}

@@ -46,6 +46,7 @@ Boolean insertMoney(Node * purchaseItem);
 
 char * generateID(List * vendingList, char uniqueId[]);
 
+Boolean checkInput(char * input);
 
 
 #endif

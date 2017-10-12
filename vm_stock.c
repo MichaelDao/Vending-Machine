@@ -51,11 +51,13 @@ List* createNode(List *vendingList, Stock *data)
 
     Node* newNode = malloc(sizeof(newNode));
 
+    /*
     if(newNode == NULL)
     {
         printf("Error creating node");
         return NULL;
     }
+    */
 
     /* Allocate memory to the newNode */
     newNode->data = malloc(sizeof(*newNode->data));
@@ -77,6 +79,7 @@ List* createNode(List *vendingList, Stock *data)
     /*  when there is a head */
     while(currentNode != NULL)
     {
+
         if(strcmp(newNode->data->name, currentNode->data->name) < 0)
         {
             break;
@@ -110,18 +113,14 @@ List* createNode(List *vendingList, Stock *data)
 
 void splitToken(char *token, Stock *stock)
 {
-    /* Holds strol result */
-
-    const int base_10 = 10;
+    const int BASE_10 = 10;
 
     /* For loop index */
     int x;
 
     char * priceExtract;
-
     char * dollarExtract;
     char * centExtract;
-
     char * onHandExtract;
 
 
@@ -148,17 +147,17 @@ void splitToken(char *token, Stock *stock)
                 onHandExtract = strtok(NULL, STOCK_DELIM);
 
                 /* get dollars and cents from price as a string */
-                dollarExtract = strtok(priceExtract, ".");
-                centExtract = strtok(NULL, ".");
+                dollarExtract = strtok(priceExtract, COIN_DELIM);
+                centExtract = strtok(NULL, COIN_DELIM);
 
                 /* Assign price in dollars and cents to stock */
                 stock->price.dollars =
-                        (unsigned) strtol(dollarExtract, NULL, base_10);
+                        (unsigned) strtol(dollarExtract, NULL, BASE_10);
                 stock->price.cents =
-                        (unsigned) strtol(centExtract, NULL, base_10);
+                        (unsigned) strtol(centExtract, NULL, BASE_10);
 
                 /* Assign the onHand value */
-                stock->onHand = (unsigned) strtol(onHandExtract, NULL, base_10);
+                stock->onHand = (unsigned) strtol(onHandExtract, NULL, BASE_10);
 
                 break;
 
@@ -177,7 +176,6 @@ Node * searchItemID(List * vendingList, char * input)
 
     while(cursor != NULL)
     {
-
         if(strcmp(cursor->data->id, input) == 0)
             return cursor;
 
@@ -185,4 +183,3 @@ Node * searchItemID(List * vendingList, char * input)
     }
     return NULL;
 }
-

@@ -84,6 +84,12 @@ MenuFunction getMenuChoice(MenuItem * menu)
         /* Take in user input */
         fgets(input, sizeof(input), stdin);
 
+        /* If nothing is entered, then abort */
+        if (strcmp(input, "\n\0") == 0)
+        {
+            return menu[8].function;
+        }
+
         /* check buffer overflow */
         if (input[strlen(input) - 1] != '\n')
         {

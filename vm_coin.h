@@ -20,6 +20,6 @@
  **/
 #define DEFAULT_COIN_COUNT 20
 
-#define COIN_DELIM ","
+#define COIN_DELIM "."
 
 #endif

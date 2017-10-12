@@ -73,7 +73,7 @@ Boolean loadStock(VmSystem * system, const char * fileName)
     char buff[DESC_LEN];
 
     /* delimiter */
-    const char delimit[2] = "|";
+    const char STOCK_DELIMIT[2] = "|";
 
     /* Store individual text */
     char *token;
@@ -91,7 +91,7 @@ Boolean loadStock(VmSystem * system, const char * fileName)
     while (fgets(buff, sizeof(buff), stockFile))
     {
         /* Grab the whole line for processing */
-        token = strtok(buff, delimit);
+        token = strtok(buff, STOCK_DELIMIT);
 
         /* Read the token */
         splitToken(token,stock);
@@ -332,7 +332,7 @@ Boolean insertMoney(Node * purchaseItem)
                 return TRUE;
             }
             else
-                /* Reloop for remaining value needed */
+                /* Re-loop for remaining value needed */
                 continue;
         }
         else
@@ -361,27 +361,48 @@ void saveAndExit(VmSystem * system)
  **/
 void addItem(VmSystem * system)
 {
+    /* Constants */
+    const int MAX_PRICE_LEN = 4;
+    const int BASE_10 = 10;
+    const char * PRICE_DELIMIT = ".";
+
+    /* All the input variables for fgets*/
     char uniqueId[ID_LEN + EXTRA_SPACES];
     char inputName[NAME_LEN + NULL_SPACE];
     char inputDesc[DESC_LEN + NULL_SPACE];
-    const int MAX_PRICE_LEN = 4;
+    char inputPrice[MAX_PRICE_LEN + EXTRA_SPACES];
 
-    char nextPrice[MAX_PRICE_LEN + EXTRA_SPACES];
+    /* Products of the price delimiter */
+    char * dollarExtract;
+    char * centExtract;
 
+    /* Variable that holds the integer of the delimit variables */
+    unsigned dollarInt;
+    unsigned centInt;
+
+    /* Allocate memory to Node and Stock */
+    List * vendingList = malloc(sizeof(List));
+    Stock * stock = malloc(sizeof(Stock));
+
+    vendingList = system->itemList;
+
+    /* Automatically generate a new ID */
     generateID(system->itemList, uniqueId);
 
+    /* Update the stock node with the new ID */
+    strcpy(stock->id, uniqueId);
 
     /* Print the value of the next uniqueID */
     printf("This new meal item will have the Item id of %s.\n", uniqueId);
 
+    /* Record the input for Item Name */
     for(;;)
     {
-        /* Take in item name */
+        /* Take in item name input */
         printf("Enter the item name: ");
         fgets(inputName, sizeof(inputName), stdin);
 
-
-        /* If nothing is entered, then return to menu */
+        /* If nothing is entered, return to menu */
         if (strcmp(inputName, "\n\0") == 0)
         {
             printf("\nReturning to the main menu!\n");
@@ -396,77 +417,163 @@ void addItem(VmSystem * system)
             continue;
         }
 
-        /* continue on to next input */
+        /* Complete the string for name */
         inputName[strlen(inputName) - 1] = '\0';
-        break;
 
+        /* Assign the name to the stock node */
+        strcpy(stock->name, inputName);
+
+        /* Exit loop */
+        break;
     }
 
+    /* Record the input for Item Description */
     for(;;)
     {
-        /* Take in item description */
+        /* Take in item description via fgets */
         printf("Enter the item description: ");
         fgets(inputDesc, sizeof(inputDesc), stdin);
 
-
         /* If nothing is entered, then return to menu */
-        if (strcmp(inputDesc, "\n\0") == 0) {
+        if (strcmp(inputDesc, "\n\0") == 0)
+        {
             printf("\nReturning to the main menu!\n");
             return;
         }
 
         /* check buffer overflow */
-        if (inputDesc[strlen(inputDesc) - 1] != '\n') {
+        else if (inputDesc[strlen(inputDesc) - 1] != '\n')
+        {
             printf("Wrong input, please try again!\n");
             readRestOfLine();
             continue;
         }
 
-        /* continue on to next input */
+        /* complete string for description */
         inputDesc[strlen(inputDesc) - 1] = '\0';
+
+        /* Assign description to stock node */
+        strcpy(stock->desc, inputDesc);
+
+        /* Exit loop */
         break;
     }
 
+    /* Record the input for Item price */
     for(;;)
     {
-        /* Take in item price */
+        /* Take in item price from user input */
         printf("Enter the price for this item: ");
-        fgets(inputDesc, sizeof(inputDesc), stdin);
+        fgets(inputPrice, sizeof(inputPrice), stdin);
 
+        /* If nothing is entered, then return to menu */
+        if (strcmp(inputPrice, "\n\0") == 0)
+        {
+            printf("\nReturning to the main menu!\n");
+            return;
+        }
+
+        /* check buffer overflow */
+        else if (inputPrice[strlen(inputPrice) - 1] != '\n')
+        {
+            printf("Wrong input, please try again!\n");
+            readRestOfLine();
+            continue;
+        }
+
+        /* Complete the input string */
+        inputPrice[strlen(inputPrice) - 1] = '\0';
+
+        /* If there is no decimal point, re enter input! */
+        if (inputPrice[strlen(inputPrice) - 3] != *PRICE_DELIMIT)
+        {
+            printf("You are missing a decimal point (.), invalid price!\n");
+            continue;
+        }
+
+        /* get dollars and cents from price as a string */
+        dollarExtract = strtok(inputPrice, COIN_DELIM);
+        centExtract = strtok(NULL, COIN_DELIM);
+
+        /* Transform dollars and cents into an integer */
+        dollarInt =  (unsigned) strtol(dollarExtract, NULL, BASE_10);
+        centInt = (unsigned) strtol(centExtract, NULL, BASE_10);
+
+        /* Re enter input if the cents is not a proper denomination */
+        if (centInt % 5 != 0)
+        {
+            printf("No suitable change possible for %d cents!\n", centInt);
+            continue;
+        }
+
+        /* Assign price in dollars and cents to stock */
+        stock->price.dollars = dollarInt;
+        stock->price.cents = centInt;
+
+        /* Exit loop */
         break;
     }
-    printf("This item “%s” has now been added to the menu.", inputName);
 
+    /* Assign default stock levels */
+    stock->onHand = DEFAULT_STOCK_LEVEL;
+
+    /* Create the node and update the itemList*/
+    system->itemList = createNode(vendingList, stock);
+
+    /* Confirm creation of node */
+    printf("This item “%s, %s” has now been added to the menu.",
+           inputName, inputDesc);
+
+    /* Prompt to exit */
+    pressEnterToContinue();
 }
 
+/* Generate the next ID in the linked list */
 char * generateID(List * vendingList, char uniqueId[])
 {
+    /* index for loops */
     int x;
-    int lastIDValue;
+
+    /* How many zeroes exist in the code */
     unsigned noOfZeroes;
+
+    /* This is the value of the next ID */
+    int lastIDValue;
     char lastIDValueString[1 + NULL_SPACE];
 
-
+    /* Get next value in the list for ID */
     lastIDValue = vendingList->size + 1;
 
+    /* If the value is 1 digit, 3 zeroes*/
     if (lastIDValue >= 0 && lastIDValue < 10)
         noOfZeroes = 3;
+
+        /* If the value is 2 digits, 2 zeroes*/
     else if (lastIDValue >= 10 && lastIDValue < 100)
         noOfZeroes = 2;
-    else
+
+        /* If the value is 3 digits, 1 zeroes*/
+    else if (lastIDValue >= 100 && lastIDValue < 1000)
         noOfZeroes = 1;
+
+        /* If the value is 4 digits, no zeroes*/
+    else
+        noOfZeroes = 0;
 
     /* Place character 'I' in the first position of the address */
     strcpy(&uniqueId[0], "I");
 
+    /* Print the exact amount of zeroes needed */
     for(x = 0; x < noOfZeroes; x++)
         strcat(uniqueId, "0");
 
     /* Convert the int to a string */
     sprintf(lastIDValueString, "%d", lastIDValue);
 
+    /* Add the ID value onto the end of the string */
     strcat(uniqueId, lastIDValueString);
 
+    /* Return it to the caller */
     return uniqueId;
 }
 
@@ -526,6 +633,10 @@ void resetCoins(VmSystem * system)
  **/
 void abortProgram(VmSystem * system)
 {
+    /*TODO You need to free up memory before leaving*/
 
+    /* Exit the program */
+    printf("\nGoodbye. \n\n");
+    return exit(0);
 
 }

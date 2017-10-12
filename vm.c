@@ -43,13 +43,6 @@ int main(int argc, char ** argv)
     /* Load stock file */
     loadStock(&system, system.stockFileName);
 
-    /*
-     * To get full marks
-     * TODO 1. Make sure the names are sorted, not with the ID numbers
-     * TODO 2. Make sure the menu is displayed properly
-     */
-
-
     /* Initialize menu */
     initMenu(menu);
 
@@ -65,8 +58,4 @@ int main(int argc, char ** argv)
         else
             (*option)(&system);
     }
-
-    /* Exit the program */
-    printf("\nGoodbye. \n\n");
-    return EXIT_SUCCESS;
 }

@@ -44,5 +44,8 @@ void splitToken(char * token, Stock * stock);
 Node * searchItemID(List * vendingList, char * input);
 Boolean insertMoney(Node * purchaseItem);
 
+char * generateID(List * vendingList, char uniqueId[]);
+
+
 
 #endif

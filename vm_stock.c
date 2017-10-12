@@ -152,8 +152,10 @@ void splitToken(char *token, Stock *stock)
                 centExtract = strtok(NULL, ".");
 
                 /* Assign price in dollars and cents to stock */
-                stock->price.dollars = (unsigned) strtol(dollarExtract, NULL, base_10);
-                stock->price.cents = (unsigned) strtol(centExtract, NULL, base_10);
+                stock->price.dollars =
+                        (unsigned) strtol(dollarExtract, NULL, base_10);
+                stock->price.cents =
+                        (unsigned) strtol(centExtract, NULL, base_10);
 
                 /* Assign the onHand value */
                 stock->onHand = (unsigned) strtol(onHandExtract, NULL, base_10);
@@ -183,3 +185,4 @@ Node * searchItemID(List * vendingList, char * input)
     }
     return NULL;
 }
+

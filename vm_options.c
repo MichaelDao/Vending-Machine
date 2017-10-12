@@ -139,7 +139,7 @@ void displayItems(VmSystem * system)
 {
     Node * currentNode;
 
-    printf("\nID    | Name | Available | Price\n");
+    printf("\nID    | Name%-16s | Available | Price\n", "");
     printf("---------------------------------------------\n");
 
 
@@ -148,8 +148,8 @@ void displayItems(VmSystem * system)
     while(currentNode != NULL)
     {
         printf("%s | ", currentNode->data->id);
-        printf("%s | ", currentNode->data->name);
-        printf("%d \t\t | ", currentNode->data->onHand);
+        printf("%-20s | ", currentNode->data->name);
+        printf("%-9d | ", currentNode->data->onHand);
         printf("$ %d.%02d\n", currentNode->data->price.dollars,
                currentNode->data->price.cents);
 
@@ -223,10 +223,13 @@ void purchaseItem(VmSystem * system)
 
         printf("You have selected '%s %s' This will cost you $%d.%02d.\n",
                purchaseItem->data->name, purchaseItem->data->desc,
-               purchaseItem->data->price.dollars, purchaseItem->data->price.cents);
+               purchaseItem->data->price.dollars,
+               purchaseItem->data->price.cents);
 
-        printf("Please hand over the money – type in the value of each note/coin in cents.\n"
-               "Press enter on a new and empty line to cancel this purchase:\n");
+        printf("Please hand over the money – "
+                       "type in the value of each note/coin in cents.\n"
+                       "Press enter on a new and empty line "
+                       "to cancel this purchase:\n");
 
         /* If the item is purchased, update stock */
         if (insertMoney(purchaseItem))
@@ -321,8 +324,11 @@ Boolean insertMoney(Node * purchaseItem)
             else if (remainingDollars < 0 )
             {
                 /* Calculate the change owed and return it */
-                printf("\nThank you. Here is your %s, and your change of $%d.%02d.\n",
-                purchaseItem->data->name, abs(remainingDollars) - 1, 100 - remainingCents );
+                printf("\nThank you. Here is your %s, "
+                               "and your change of $%d.%02d.\n",
+                       purchaseItem->data->name, abs(remainingDollars) - 1,
+                       100 - remainingCents );
+
                 return TRUE;
             }
             else
@@ -331,7 +337,8 @@ Boolean insertMoney(Node * purchaseItem)
         }
         else
         {
-            printf("Error: $%d.%02d is not a valid denomination of money.\n", dollarExtract, centExtract);
+            printf("Error: $%d.%02d is not a valid denomination of money.\n",
+                   dollarExtract, centExtract);
             continue;
         }
     }
@@ -347,15 +354,120 @@ void saveAndExit(VmSystem * system)
 
 }
 
+
 /**
  * This option adds an item to the system. This function implements
  * requirement 7 of of assignment specification.
  **/
 void addItem(VmSystem * system)
 {
+    char uniqueId[ID_LEN + EXTRA_SPACES];
+    char inputName[NAME_LEN + NULL_SPACE];
+    char inputDesc[DESC_LEN + NULL_SPACE];
+    const int MAX_PRICE_LEN = 4;
+
+    char nextPrice[MAX_PRICE_LEN + EXTRA_SPACES];
+
+    generateID(system->itemList, uniqueId);
 
 
+    /* Print the value of the next uniqueID */
+    printf("This new meal item will have the Item id of %s.\n", uniqueId);
 
+    for(;;)
+    {
+        /* Take in item name */
+        printf("Enter the item name: ");
+        fgets(inputName, sizeof(inputName), stdin);
+
+
+        /* If nothing is entered, then return to menu */
+        if (strcmp(inputName, "\n\0") == 0)
+        {
+            printf("\nReturning to the main menu!\n");
+            return;
+        }
+
+        /* check buffer overflow */
+        else if (inputName[strlen(inputName) - 1] != '\n')
+        {
+            printf("Wrong input, please try again!\n");
+            readRestOfLine();
+            continue;
+        }
+
+        /* continue on to next input */
+        inputName[strlen(inputName) - 1] = '\0';
+        break;
+
+    }
+
+    for(;;)
+    {
+        /* Take in item description */
+        printf("Enter the item description: ");
+        fgets(inputDesc, sizeof(inputDesc), stdin);
+
+
+        /* If nothing is entered, then return to menu */
+        if (strcmp(inputDesc, "\n\0") == 0) {
+            printf("\nReturning to the main menu!\n");
+            return;
+        }
+
+        /* check buffer overflow */
+        if (inputDesc[strlen(inputDesc) - 1] != '\n') {
+            printf("Wrong input, please try again!\n");
+            readRestOfLine();
+            continue;
+        }
+
+        /* continue on to next input */
+        inputDesc[strlen(inputDesc) - 1] = '\0';
+        break;
+    }
+
+    for(;;)
+    {
+        /* Take in item price */
+        printf("Enter the price for this item: ");
+        fgets(inputDesc, sizeof(inputDesc), stdin);
+
+        break;
+    }
+    printf("This item “%s” has now been added to the menu.", inputName);
+
+}
+
+char * generateID(List * vendingList, char uniqueId[])
+{
+    int x;
+    int lastIDValue;
+    unsigned noOfZeroes;
+    char lastIDValueString[1 + NULL_SPACE];
+
+
+    lastIDValue = vendingList->size + 1;
+
+    if (lastIDValue >= 0 && lastIDValue < 10)
+        noOfZeroes = 3;
+    else if (lastIDValue >= 10 && lastIDValue < 100)
+        noOfZeroes = 2;
+    else
+        noOfZeroes = 1;
+
+    /* Place character 'I' in the first position of the address */
+    strcpy(&uniqueId[0], "I");
+
+    for(x = 0; x < noOfZeroes; x++)
+        strcat(uniqueId, "0");
+
+    /* Convert the int to a string */
+    sprintf(lastIDValueString, "%d", lastIDValue);
+
+    strcat(uniqueId, lastIDValueString);
+
+    return uniqueId;
 }
 
 /**
@@ -364,8 +476,7 @@ void addItem(VmSystem * system)
  **/
 void removeItem(VmSystem * system)
 {
-
-
+    printf("Enter the item id of the item to remove from the menu: ");
 
 }
 

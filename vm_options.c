@@ -421,16 +421,34 @@ char * generateID(List * vendingList, char uniqueId[])
  **/
 void removeItem(VmSystem * system)
 {
+    Node *targetNode = NULL;
     char input[ID_LEN + EXTRA_SPACES];
+    List * vendingList = system->itemList;
 
+    for(;;)
+    {
+        printf("Enter the item id of the item to remove from the menu: ");
 
-    printf("Enter the item id of the item to remove from the menu: ");
+        if (!checkInput(input))
+            return;
 
-    if(!checkInput(input))
-        return;
+        /* Before passing the input, modify it */
+        input[strlen(input) - 1] = '\0';
 
-    /* Before passing the input, modify it */
-    input[strlen(input) - 1] = '\0';
+        targetNode = searchItemID(vendingList, input);
+
+        if (targetNode == NULL)
+        {
+            printf("Could not find %s\n", input);
+            continue;
+        }
+        else
+        {
+            removeNode(vendingList, targetNode);
+
+        }
+        break;
+    }
 }
 
 Boolean checkInput(char * input)

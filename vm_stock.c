@@ -184,8 +184,87 @@ Node * searchItemID(List * vendingList, char * input)
     return NULL;
 }
 
-Node * removeNode(List * vendingList, char * input)
+Node * removeNode(List * vendingList, Node * targetNode)
 {
-    /* If first node */
 
+    /* If first node, remove head */
+    if (vendingList->head == targetNode)
+    {
+        vendingList->head = removeFront(vendingList->head);
+        return vendingList->head;
+    }
+
+    /* If last node in list, remove end */
+    if (targetNode->next == NULL)
+    {
+        vendingList->head = removeBack(vendingList->head);
+        return vendingList->head;
+
+    }
+
+    /* If the node is in the middle */
+    Node * middleNode = vendingList->head;
+
+    while (middleNode != NULL)
+    {
+        if (middleNode->next = targetNode)
+            break;
+        middleNode = middleNode-> next;
+    }
+
+    if(middleNode != NULL)
+    {
+        Node * tempNode = middleNode->next;
+        middleNode->next = tempNode->next;
+        tempNode->next = NULL;
+        free(tempNode);
+    }
+
+    return vendingList->head;
+
+}
+
+Node * removeFront(Node * cursor)
+{
+/*
+    if(targetNode == NULL)
+        return NULL;
+*/
+
+    Node * head = cursor;
+
+    cursor = cursor->next;
+
+    head ->next = NULL;
+
+    /* Check if this is the only node in the list */
+    if (head == cursor)
+        cursor = NULL;
+
+    free(head);
+
+    return cursor;
+}
+
+Node * removeBack(Node * cursor)
+{
+    Node * tempNode = cursor;
+    Node * back = NULL;
+
+    while (tempNode->next != NULL)
+    {
+        back = tempNode;
+        tempNode = tempNode -> next;
+    }
+
+    if (back != NULL)
+        back->next = NULL;
+
+    /* If this is the only node */
+    if (tempNode == cursor)
+        cursor = NULL;
+
+    free (tempNode);
+
+    return cursor;
 }

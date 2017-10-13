@@ -44,7 +44,7 @@ int main(int argc, char ** argv)
 
     /* Load stock file */
     loadStock(&system, system.stockFileName);
-    
+
     /* Initialize menu */
     initMenu(menu);
 

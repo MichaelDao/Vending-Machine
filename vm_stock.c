@@ -13,14 +13,9 @@
 #include "vm_stock.h"
 
 /**
- * vm_stock.c this is the file where you will implement the
- * interface functions for managing the stock list.
+ * vm_stock.c this is the file where the interface functions for managing
+ * the stock list is implemented.
  **/
-
-/**
- * Some example functions:
- * create list, free list, create node, free node, insert node, etc...
- */
 
 /* Initialize the list */
 List* initializeList()
@@ -42,80 +37,77 @@ List* initializeList()
     return vendingList;
 }
 
-
 /* Create a new node before applying data */
 List* createNode(List *vendingList, Stock *data)
 {
+    /* Setup Node variables */
     Node * previousNode;
     Node * currentNode;
 
+    /* Assign memory to newNode */
     Node* newNode = malloc(sizeof(Node));
 
-    /*
-    if(newNode == NULL)
-    {
-        printf("Error creating node");
-        return NULL;
-    }
-    */
-
-    /* Allocate memory to the newNode */
-  /*  newNode->data = malloc(sizeof(Stock));
-*/
-  /*  if(newNode == NULL)
-    {
-        free(newNode);
-        printf("Error creating node");
-        return NULL;
-    }
-*/
-    /* Apply the data to the newNode */
-    newNode->data = data;
-
+    /* Initialize each node */
     previousNode = NULL;
-
     currentNode = vendingList->head;
 
-    /*  when there is a head */
+    /* Assign and hold the data in a node */
+    newNode->data = data;
+
+    /* Loop only when there is a head */
     while(currentNode != NULL)
     {
-
+        /* Organize all the nodes into the linked list alphabetically */
         if(strcmp(newNode->data->name, currentNode->data->name) < 0)
             break;
 
+        /* Hold value of head or node */
         previousNode = currentNode;
+
+        /* Focus the current node to the next in the linked list */
         currentNode = currentNode->next;
     }
 
-    /* When there is no head, assign the head node */
+    /* When there is no head, there is no linked list assign only the head */
     if(vendingList->head == NULL)
         vendingList->head = newNode;
 
+        /* Insert node at the head */
     else if(previousNode == NULL)
     {
-        /* Inserting at the head. */
+        /* Attach the linked list to the end of new node */
         newNode->next = vendingList->head;
+
+        /* This new combination is the now the linked list */
         vendingList->head = newNode;
     }
+
+        /* Placing a node anywhere in the middle */
     else
     {
+        /* Previous node will hold the new Node next */
         previousNode->next = newNode;
+
+        /* Then attach the rest of the node after the new Node */
         newNode->next = currentNode;
     }
 
-    /* Increment the size integer */
+    /* Increment the size integer for each new node*/
     vendingList->size++;
 
+    /* return the linked list */
     return vendingList;
 }
 
+/* Split the token from the save file when reading */
 void splitToken(char *token, Stock *stock)
 {
     const int BASE_10 = 10;
 
-    /* For loop index */
+    /* loop index */
     int x;
 
+    /* Variables for extracting the price into dollars and cents */
     char * priceExtract;
     char * dollarExtract;
     char * centExtract;
@@ -124,26 +116,31 @@ void splitToken(char *token, Stock *stock)
     /* walk through all tokens */
     for (x = 0; token != NULL; x++)
     {
+        /* Switch statement checks which data needs to be processed */
         switch (x)
         {
+            /* Process ID */
             case 0:
                 strcpy(stock->id, token);
                 break;
 
+                /* Process Name */
             case 1:
                 strcpy(stock->name, token);
                 break;
 
+                /* Process description */
             case 2:
                 strcpy(stock->desc, token);
                 break;
 
+                /* Process price and stock */
             case 3:
-                /* save the price and onHnad values */
+                /* save the price and onHand values first from the file */
                 priceExtract = token;
                 onHandExtract = strtok(NULL, STOCK_DELIM);
 
-                /* get dollars and cents from price as a string */
+                /* extract dollars and cents from price token as string */
                 dollarExtract = strtok(priceExtract, COIN_DELIM);
                 centExtract = strtok(NULL, COIN_DELIM);
 
@@ -155,11 +152,10 @@ void splitToken(char *token, Stock *stock)
 
                 /* Assign the onHand value */
                 stock->onHand = (unsigned) strtol(onHandExtract, NULL, BASE_10);
-
                 break;
 
             default :
-                printf("default");
+                break;
         }
 
         /* move to the next token */
@@ -167,120 +163,158 @@ void splitToken(char *token, Stock *stock)
     }
 }
 
+/* Look for the correct ID in the linked list */
 Node * searchItemID(List * vendingList, char * input)
 {
+    /* Initialize the node */
     Node * cursor = vendingList->head;
 
+    /* Loop through all available nodes in the linked list */
     while(cursor != NULL)
     {
+        /* If user input matches the node ID, return node */
         if(strcmp(cursor->data->id, input) == 0)
             return cursor;
 
+        /* Focus on the next node in the linked list */
         cursor = cursor->next;
     }
+    /* Could not find it */
     return NULL;
 }
 
+/* Delete a node from the linked list */
 Node * removeNode(List * vendingList, Node * targetNode)
 {
-
+    /* Initialize this node just in case we have to remove the middle node */
     Node * middleNode;
+    middleNode = vendingList->head;
 
-    /* If first node, remove head */
+    /* If it is the first node, remove the head */
     if (vendingList->head == targetNode)
     {
+        /* Call removeFront function to remove head node */
         vendingList->head = removeFront(vendingList->head);
         return vendingList->head;
     }
 
-    /* If last node in list, remove end */
+    /* If last node in list, remove the end */
     if (targetNode->next == NULL)
     {
+        /* Call removeBack function to remove the last node */
         vendingList->head = removeBack(vendingList->head);
         return vendingList->head;
-
     }
 
-    /* If the node is in the middle */
-    middleNode = vendingList->head;
-
+    /* If it is neither the front or back node, remove the node from the list */
     while (middleNode != NULL)
     {
+        /* step through each node until the target has been found */
         if (middleNode->next == targetNode)
             break;
+
+        /* focus on the next node in the list */
         middleNode = middleNode-> next;
     }
 
+    /* If the middle node has been found */
     if(middleNode != NULL)
     {
+        /* The temp Node will point at the node to remove */
         Node * tempNode = middleNode->next;
+
+        /* Now attach the node after temp to the node before temp */
         middleNode->next = tempNode->next;
+
+        /* Now remove the tempNode */
         tempNode->next = NULL;
-        free(tempNode);
     }
 
-    return vendingList->head;
+    /* Free memory */
+    free(middleNode);
 
+    /* Return the nodes at the head to caller */
+    return vendingList->head;
 }
 
-Node * removeFront(Node * targetNode)
+/* Remove the node at the head */
+Node * removeFront(Node * head)
 {
-/*
-    if(targetNode == NULL)
-        return NULL;
-*/
+    /* Point at node to remove */
+    Node * targetNode = head;
 
-    Node * head = targetNode;
+    /* Point head at the next node */
+    head = head->next;
 
-    targetNode = targetNode->next;
-
-    head ->next = NULL;
+    /* Remove the Node after the head */
+    targetNode->next = NULL;
 
     /* Check if this is the only node in the list */
-    if (head == targetNode)
-        targetNode = NULL;
+    if (targetNode == head)
+        head = NULL;
 
+    /* free memory */
     free(head);
 
-    return targetNode;
+    /* return the new head node */
+    return head;
 }
 
+/* Remove the last node in the linked list */
 Node * removeBack(Node * targetNode)
 {
+    /* Declare two Nodes to track this process */
     Node * tempNode = targetNode;
     Node * back = NULL;
 
+    /* Start from the first node until it reaches the last */
     while (tempNode->next != NULL)
     {
         back = tempNode;
         tempNode = tempNode -> next;
     }
 
+    /* Set the back pointer towards the null at the end */
     if (back != NULL)
         back->next = NULL;
 
-    /* If this is the only node */
+    /* If this is the only node, then just simply remove it */
     if (tempNode == targetNode)
         targetNode = NULL;
 
+    /* Free memory */
     free (tempNode);
 
+    /* return the new node to the caller */
     return targetNode;
 }
 
+/* Delete the whole linked list to clear up memory */
 void killLinkedList(Node * head)
 {
-    Node *tempNode, *targetNode;
+    Node *tempNode;
+    Node *targetNode;
 
+    /* If the head exists */
     if (head != NULL)
     {
+        /* Target node will focus on the next node */
         targetNode = head->next;
+
+        /* Delete the node */
         head->next = NULL;
+
+        /* While targetNode has not reached the end */
         while(targetNode != NULL)
         {
-            tempNode = targetNode -> next;
+            /* Point at the next node in the list */
+            tempNode = targetNode->next;
+
+            /* free up the memory from the node including its data */
             free(targetNode->data);
             free(targetNode);
+
+            /* Swap the variables, keep traversing down the list */
             targetNode = tempNode;
         }
     }

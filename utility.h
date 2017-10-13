@@ -1,17 +1,16 @@
-#ifndef UTILITY_H
-#define UTILITY_H
-
 /******************************************************************************
 
 ** Student Name: <Michael Dao>
 
 ** Student Number: <s3668300>
 
-** Date of submission: <NULL>
+** Date of submission: <13/10/2017>
 
 ** Course: COSC1076 / COSC2207, Semester 2, 2017
 
 ******************************************************************************/
+#ifndef UTILITY_H
+#define UTILITY_H
 
 #include <stdio.h>
 #include <stdlib.h>

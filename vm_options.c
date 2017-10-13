@@ -4,7 +4,7 @@
 
 ** Student Number: <s3668300>
 
-** Date of submission: <NULL>
+** Date of submission: <13/10/2017>
 
 ** Course: COSC1076 / COSC2207, Semester 2, 2017
 
@@ -284,15 +284,15 @@ void saveAndExit(VmSystem * system)
 void addItem(VmSystem * system)
 {
     /* Constants */
-    const int MAX_PRICE_LEN = 4;
-    const int BASE_10 = 10;
+    /*const int MAX_PRICE_LEN = 4;
+    */const int BASE_10 = 10;
     const char * PRICE_DELIMIT = ".";
 
     /* All the input variables for fgets*/
     char uniqueId[ID_LEN + EXTRA_SPACES];
     char inputName[NAME_LEN + NULL_SPACE];
     char inputDesc[DESC_LEN + NULL_SPACE];
-    char inputPrice[MAX_PRICE_LEN + EXTRA_SPACES];
+    char inputPrice[4 + EXTRA_SPACES];
 
     /* Products of the price delimiter */
     char * dollarExtract;
@@ -565,8 +565,6 @@ void abortProgram(VmSystem * system)
     printf("\nGoodbye. \n\n");
     exit(0);
 }
-
-
 
 void pressEnterToContinue()
 {

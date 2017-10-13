@@ -4,7 +4,7 @@
 
 ** Student Number: <s3668300>
 
-** Date of submission: <NULL>
+** Date of submission: <13/10/2017>
 
 ** Course: COSC1076 / COSC2207, Semester 2, 2017
 
@@ -184,6 +184,8 @@ Node * searchItemID(List * vendingList, char * input)
 Node * removeNode(List * vendingList, Node * targetNode)
 {
 
+    Node * middleNode;
+
     /* If first node, remove head */
     if (vendingList->head == targetNode)
     {
@@ -200,7 +202,7 @@ Node * removeNode(List * vendingList, Node * targetNode)
     }
 
     /* If the node is in the middle */
-    Node * middleNode = vendingList->head;
+    middleNode = vendingList->head;
 
     while (middleNode != NULL)
     {

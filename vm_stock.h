@@ -26,5 +26,4 @@
 Node * removeFront(Node * vendingList);
 Node * removeBack(Node * cursor);
 
-
 #endif

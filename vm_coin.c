@@ -17,12 +17,7 @@
  * "cash register" contained in the VmSystem struct.
  **/
 
-/**
- * Some example functions:
- * init coins array, insert coin, change coin count for Denomination,
- * convert Denomination to coin value, deducting coins from register, etc...
- */
-
+/* Initialize all the coins */
 Coin* initializeCoins(Coin * cashRegister)
 {
     int x;
@@ -36,6 +31,7 @@ Coin* initializeCoins(Coin * cashRegister)
         /* Apply the denomination and increment */
         cashRegister[x].denom = value++;
     }
+    /* Not readily implemented yet */
     return NULL;
 }
 
@@ -49,15 +45,13 @@ Boolean insertMoney(Node * purchaseItem)
     int base_10 = 10;
     unsigned price;
 
+    /* All these ints are used to calculate the change and extract price */
     int remainingDollars;
     int remainingCents;
-
     unsigned dollarExtract;
     unsigned centExtract;
-
     unsigned dollarTotal;
     unsigned centTotal;
-
     dollarTotal = 0;
     centTotal = 0;
 
@@ -67,6 +61,7 @@ Boolean insertMoney(Node * purchaseItem)
 
     for (;;)
     {
+        /* prompt */
         printf("You still need to give us $%d.%02d: ",
                remainingDollars, remainingCents);
 
@@ -92,14 +87,18 @@ Boolean insertMoney(Node * purchaseItem)
         /* Convert the input to an integer */
         price = (unsigned) strtol(input, NULL, base_10);
 
+        /* Calculate cents and dollar from input */
         dollarExtract = price / 100;
         centExtract = price % 100;
 
+        /* Validate price input */
         if (price == 0)
         {
             printf("Error: Please enter a valid denomination\n");
             continue;
         }
+
+            /* If user enters correct value, process the payment */
         else if (price == 5 || price == 10 || price == 20 || price == 50 ||
                  price == 100 || price == 200 || price == 500 || price == 1000)
         {
@@ -111,6 +110,7 @@ Boolean insertMoney(Node * purchaseItem)
             remainingDollars -= dollarExtract;
             remainingCents -= centExtract;
 
+            /* No change provided */
             if (remainingDollars == 0 )
             {
                 printf("Thank you. Here is your %s.\n",
@@ -118,6 +118,8 @@ Boolean insertMoney(Node * purchaseItem)
                 return TRUE;
 
             }
+
+                /* Change has to be provided */
             else if (remainingDollars < 0 )
             {
                 /* Calculate the change owed and return it */
@@ -125,13 +127,13 @@ Boolean insertMoney(Node * purchaseItem)
                                "and your change of $%d.%02d.\n",
                        purchaseItem->data->name, abs(remainingDollars) - 1,
                        100 - remainingCents );
-
                 return TRUE;
             }
-            else
                 /* Re-loop for remaining value needed */
+            else
                 continue;
         }
+            /* If the input is wrong, then prompt to reenter value */
         else
         {
             printf("Error: $%d.%02d is not a valid denomination of money.\n",

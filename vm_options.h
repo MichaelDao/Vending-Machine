@@ -35,20 +35,14 @@ void resetCoins(VmSystem * system);
 void abortProgram(VmSystem * system);
 
 void pressEnterToContinue();
-
 Coin* initializeCoins(Coin * cashRegister);
-
 List* initializeList();
 List* createNode(List * vendingList, Stock * data);
 void splitToken(char * token, Stock * stock);
 Node * searchItemID(List * vendingList, char * input);
 Boolean insertMoney(Node * purchaseItem);
-
 char * generateID(List * vendingList, char uniqueId[]);
-
 Node * removeNode(List * vendingList, Node * removeNode);
 void killLinkedList(Node * head);
-
-
 
 #endif

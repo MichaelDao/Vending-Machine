@@ -51,7 +51,7 @@ void printMenu(MenuItem * menu)
 {
     int x;
 
-    for(x = 0; x < sizeof(menu); x++)
+    for(x = 0; x <= sizeof(menu); x++)
     {
         if (x == 0)
             printf("\nMain Menu:\n");
@@ -70,6 +70,7 @@ void printMenu(MenuItem * menu)
  **/
 MenuFunction getMenuChoice(MenuItem * menu)
 {
+
     char input[1 + EXTRA_SPACES];
     int chosenOption;
     int base_10 = 10;
@@ -85,10 +86,10 @@ MenuFunction getMenuChoice(MenuItem * menu)
         fgets(input, sizeof(input), stdin);
 
         /* If nothing is entered, then abort */
-        if (strcmp(input, "\n\0") == 0)
+      /*  if (strcmp(input, "\n\0") == 0)
         {
             return menu[8].function;
-        }
+        }*/
 
         /* check buffer overflow */
         if (input[strlen(input) - 1] != '\n')

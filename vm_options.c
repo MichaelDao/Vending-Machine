@@ -44,7 +44,12 @@ Boolean systemInit(VmSystem * system)
  **/
 void systemFree(VmSystem * system)
 {
+    Node * nextNode;
+
+    killLinkedList(system->itemList->head);
+
     free(system->itemList);
+
 }
 
 /**
@@ -72,17 +77,16 @@ Boolean loadStock(VmSystem * system, const char * fileName)
     /* Store text line */
     char buff[DESC_LEN];
 
+    Stock * stock;
     /* delimiter */
     const char STOCK_DELIMIT[2] = "|";
 
     /* Store individual text */
     char *token;
 
-
     /* Allocate memory to Node and Stock */
-    List *vendingList = malloc(sizeof(List));
-
-    Stock *stock = malloc(sizeof(Stock));
+    /*List *vendingList = malloc(sizeof(List));
+*/
 
     /* Read the file TODO Instead of string name, try to use filename char */
     stockFile = fopen(fileName, "r");
@@ -90,6 +94,8 @@ Boolean loadStock(VmSystem * system, const char * fileName)
     /* read each line in the text file */
     while (fgets(buff, sizeof(buff), stockFile))
     {
+        stock = malloc(sizeof(Stock));
+
         /* Grab the whole line for processing */
         token = strtok(buff, STOCK_DELIMIT);
 
@@ -97,7 +103,8 @@ Boolean loadStock(VmSystem * system, const char * fileName)
         splitToken(token,stock);
 
         /* Create the node and update the itemList*/
-        system->itemList = createNode(vendingList, stock);
+        system->itemList = createNode(system->itemList, stock);
+
     }
 
 
@@ -120,6 +127,7 @@ Boolean loadCoins(VmSystem * system, const char * fileName)
  **/
 Boolean saveStock(VmSystem * system)
 {
+
     return FALSE;
 }
 
@@ -142,7 +150,6 @@ void displayItems(VmSystem * system)
     printf("\nID    | Name%-16s | Available | Price\n", "");
     printf("---------------------------------------------\n");
 
-
     currentNode = system->itemList->head;
 
     while(currentNode != NULL)
@@ -152,7 +159,6 @@ void displayItems(VmSystem * system)
         printf("%-9d | ", currentNode->data->onHand);
         printf("$ %d.%02d\n", currentNode->data->price.dollars,
                currentNode->data->price.cents);
-
 
         /* Get the next node */
         currentNode = currentNode->next;
@@ -234,6 +240,36 @@ void purchaseItem(VmSystem * system)
  **/
 void saveAndExit(VmSystem * system)
 {
+    FILE * filePointer;
+    char * fileName = "stock.dat";
+    filePointer = fopen(fileName, "w+");
+
+    Node * cursor = system->itemList->head;
+
+    while(cursor != NULL)
+    {
+        fprintf(filePointer, "%s|", cursor->data->id);
+        fprintf(filePointer, "%s|", cursor->data->name);
+        fprintf(filePointer, "%s|", cursor->data->desc);
+        fprintf(filePointer, "%d.%d|",
+                cursor->data->price.dollars, cursor->data->price.dollars);
+        fprintf(filePointer, "%d\n", cursor->data->onHand);
+
+
+
+
+        /* Move to the next node */
+        cursor = cursor->next;
+    }
+
+    fclose(filePointer);
+
+    printf("Saved data to the file!");
+
+   /* systemFree(system);
+*/
+    /* IM RUNNING INTO THE NINTH OPTION NOW */
+    abortProgram(system);
 
 }
 
@@ -264,7 +300,7 @@ void addItem(VmSystem * system)
     unsigned centInt;
 
     /* Allocate memory to Node and Stock */
-    List * vendingList = malloc(sizeof(List));
+    List * vendingList; /* = malloc(sizeof(List));*/
     Stock * stock = malloc(sizeof(Stock));
 
     vendingList = system->itemList;
@@ -285,7 +321,10 @@ void addItem(VmSystem * system)
     /*fgets(inputName, sizeof(inputName), stdin);*/
 
     if(!checkInput(inputName))
+    {
+
         return;
+    }
 
     /* Complete the string for name */
     inputName[strlen(inputName) - 1] = '\0';
@@ -306,8 +345,6 @@ void addItem(VmSystem * system)
 
     /* Assign description to stock node */
     strcpy(stock->desc, inputDesc);
-
-
 
     /* Record the input for Item price */
     for(;;)
@@ -445,36 +482,18 @@ void removeItem(VmSystem * system)
         else
         {
             removeNode(vendingList, targetNode);
-
         }
         break;
     }
+
+    printf("\n%s has been removed!\n", input);
+
+    /* Prompt to exit */
+    pressEnterToContinue();
+
 }
 
-Boolean checkInput(char * input)
-{
-    for(;;)
-    {
-        /* Take in user input */
-        fgets(input, sizeof(input), stdin);
 
-        /* If nothing is entered, then return to menu */
-        if (strcmp(input, "\n\0") == 0)
-        {
-            printf("\nReturning to the main menu!\n");
-            return FALSE;
-        }
-
-        /* check buffer overflow */
-        else if (input[strlen(input) - 1] != '\n')
-        {
-            printf("Wrong input, please try again!\n");
-            readRestOfLine();
-            continue;
-        }
-        return TRUE;
-    }
-}
 
 /**
  * This option will require you to display the coins from lowest to highest
@@ -484,8 +503,10 @@ Boolean checkInput(char * input)
  **/
 void displayCoins(VmSystem * system)
 {
+    printf("\nCoins has not been implemented yet!\n");
 
-
+    /* Prompt to exit */
+    pressEnterToContinue();
 
 }
 
@@ -521,9 +542,10 @@ void resetStock(VmSystem * system)
  **/
 void resetCoins(VmSystem * system)
 {
+    printf("\nCoins has not been implemented yet!\n");
 
-
-
+    /* Prompt to exit */
+    pressEnterToContinue();
 }
 
 /**
@@ -533,12 +555,13 @@ void resetCoins(VmSystem * system)
 void abortProgram(VmSystem * system)
 {
     /*TODO You need to free up memory before leaving*/
+    systemFree(system);
 
     /* Exit the program */
     printf("\nGoodbye. \n\n");
     return exit(0);
-
 }
+
 
 
 void pressEnterToContinue()
@@ -549,6 +572,32 @@ void pressEnterToContinue()
 
     while (myChar != '\r' && myChar  != '\n')
         myChar = getchar();
+
+
 }
 
 
+Boolean checkInput(char * input)
+{
+    for(;;)
+    {
+        /* Take in user input */
+        fgets(input, sizeof(input), stdin);
+
+        /* If nothing is entered, then return to menu */
+        if (strcmp(input, "\n\0") == 0)
+        {
+            printf("\nReturning to the main menu!\n");
+            return FALSE;
+        }
+
+            /* check buffer overflow */
+        else if (input[strlen(input) - 1] != '\n')
+        {
+            printf("Wrong input, please try again!\n");
+            readRestOfLine();
+            continue;
+        }
+        return TRUE;
+    }
+}

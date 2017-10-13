@@ -51,11 +51,9 @@ int main(int argc, char ** argv)
         /* Print menu and ask for choice */
         option = getMenuChoice(menu);
 
-        if (option == saveAndExit)
-            break;
-        else if (option == NULL)
-            continue;
-        else
+        if (option != NULL)
             (*option)(&system);
+        else
+            break;
     }
 }

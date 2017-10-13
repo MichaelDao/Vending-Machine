@@ -26,7 +26,7 @@
 List* initializeList()
 {
     /* Allocate memory to list */
-    List* vendingList = malloc(sizeof(vendingList));
+    List* vendingList = malloc(sizeof(List));
 
     /* exit if vmList doesnt exist */
     if (vendingList == NULL)
@@ -35,7 +35,7 @@ List* initializeList()
     else
     {/* Assign default values */
         vendingList->head = NULL;
-        vendingList->size = 0;
+        vendingList->size = (unsigned)0;
     }
 
     /* Return the initialized list */
@@ -49,7 +49,7 @@ List* createNode(List *vendingList, Stock *data)
     Node * previousNode;
     Node * currentNode;
 
-    Node* newNode = malloc(sizeof(newNode));
+    Node* newNode = malloc(sizeof(Node));
 
     /*
     if(newNode == NULL)
@@ -60,17 +60,17 @@ List* createNode(List *vendingList, Stock *data)
     */
 
     /* Allocate memory to the newNode */
-    newNode->data = malloc(sizeof(*newNode->data));
-
-    if(newNode->data == NULL)
+  /*  newNode->data = malloc(sizeof(Stock));
+*/
+  /*  if(newNode == NULL)
     {
         free(newNode);
         printf("Error creating node");
         return NULL;
     }
-
+*/
     /* Apply the data to the newNode */
-    *newNode->data = *data;
+    newNode->data = data;
 
     previousNode = NULL;
 
@@ -81,9 +81,7 @@ List* createNode(List *vendingList, Stock *data)
     {
 
         if(strcmp(newNode->data->name, currentNode->data->name) < 0)
-        {
             break;
-        }
 
         previousNode = currentNode;
         currentNode = currentNode->next;
@@ -122,7 +120,6 @@ void splitToken(char *token, Stock *stock)
     char * dollarExtract;
     char * centExtract;
     char * onHandExtract;
-
 
     /* walk through all tokens */
     for (x = 0; token != NULL; x++)
@@ -207,7 +204,7 @@ Node * removeNode(List * vendingList, Node * targetNode)
 
     while (middleNode != NULL)
     {
-        if (middleNode->next = targetNode)
+        if (middleNode->next == targetNode)
             break;
         middleNode = middleNode-> next;
     }
@@ -224,31 +221,31 @@ Node * removeNode(List * vendingList, Node * targetNode)
 
 }
 
-Node * removeFront(Node * cursor)
+Node * removeFront(Node * targetNode)
 {
 /*
     if(targetNode == NULL)
         return NULL;
 */
 
-    Node * head = cursor;
+    Node * head = targetNode;
 
-    cursor = cursor->next;
+    targetNode = targetNode->next;
 
     head ->next = NULL;
 
     /* Check if this is the only node in the list */
-    if (head == cursor)
-        cursor = NULL;
+    if (head == targetNode)
+        targetNode = NULL;
 
     free(head);
 
-    return cursor;
+    return targetNode;
 }
 
-Node * removeBack(Node * cursor)
+Node * removeBack(Node * targetNode)
 {
-    Node * tempNode = cursor;
+    Node * tempNode = targetNode;
     Node * back = NULL;
 
     while (tempNode->next != NULL)
@@ -261,10 +258,28 @@ Node * removeBack(Node * cursor)
         back->next = NULL;
 
     /* If this is the only node */
-    if (tempNode == cursor)
-        cursor = NULL;
+    if (tempNode == targetNode)
+        targetNode = NULL;
 
     free (tempNode);
 
-    return cursor;
+    return targetNode;
+}
+
+void killLinkedList(Node * head)
+{
+    Node *tempNode, *targetNode;
+
+    if (head != NULL)
+    {
+        targetNode = head->next;
+        head->next = NULL;
+        while(targetNode != NULL)
+        {
+            tempNode = targetNode -> next;
+            free(targetNode->data);
+            free(targetNode);
+            targetNode = tempNode;
+        }
+    }
 }

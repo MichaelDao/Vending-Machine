@@ -54,6 +54,10 @@ int main(int argc, char ** argv)
         if (option != NULL)
             (*option)(&system);
         else
-            break;
+        {
+            printf("Error with menu option");
+            exit(0);
+
+        }
     }
 }

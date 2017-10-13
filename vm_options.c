@@ -44,7 +44,6 @@ Boolean systemInit(VmSystem * system)
  **/
 void systemFree(VmSystem * system)
 {
-    Node * nextNode;
 
     killLinkedList(system->itemList->head);
 
@@ -179,7 +178,8 @@ void purchaseItem(VmSystem * system)
 
     Node * purchaseItem = NULL;
 
-    List * vendingList = system->itemList;
+    List * vendingList;
+    vendingList = system->itemList;
 
     printf("\nPurchase Item\n");
     printf("----------------\n");
@@ -241,10 +241,13 @@ void purchaseItem(VmSystem * system)
 void saveAndExit(VmSystem * system)
 {
     FILE * filePointer;
-    char * fileName = "stock.dat";
+    char * fileName;
+    Node * cursor;
+
+    fileName = "stock.dat";
     filePointer = fopen(fileName, "w+");
 
-    Node * cursor = system->itemList->head;
+    cursor = system->itemList->head;
 
     while(cursor != NULL)
     {
@@ -460,7 +463,9 @@ void removeItem(VmSystem * system)
 {
     Node *targetNode = NULL;
     char input[ID_LEN + EXTRA_SPACES];
-    List * vendingList = system->itemList;
+    List * vendingList;
+
+    vendingList = system->itemList;
 
     for(;;)
     {
@@ -493,9 +498,8 @@ void removeItem(VmSystem * system)
 
 }
 
-
-
 /**
+ *
  * This option will require you to display the coins from lowest to highest
  * value and the counts of coins should be correctly aligned.
  * This function implements part 4 of requirement 18 in the assignment
@@ -559,7 +563,7 @@ void abortProgram(VmSystem * system)
 
     /* Exit the program */
     printf("\nGoodbye. \n\n");
-    return exit(0);
+    exit(0);
 }
 
 

@@ -13,35 +13,33 @@
 #include "vm.h"
 #define MENU_LENGTH 9
 
-
 int main(int argc, char ** argv)
 {
-    /* Create structures for calling */
     MenuItem menu[MENU_LENGTH];
-    VmSystem system;
     MenuFunction option;
+    VmSystem system;
 
-
-    /* DEBUG SETTING IT UP MANUALLY */
-
+    /* DEBUG Uncomment for CLion */
     argv[1] = "stock.dat";
     argv[2] = "coins.dat";
 
+    /* Initialize the system */
+    if(!systemInit(&system))
+    {
+        /* Error if returns false */
+        printf("Error initializing system.");
+        EXIT_FAILURE;
+    }
 
-    /* Initialize the system TODO Ensure boolean is used*/
-    systemInit(&system);
-
-    /* Load the files */
-    loadData(&system, argv[1], argv[2]);
-
+    /* Handle error if no stock file entered */
     if (system.stockFileName == NULL)
     {
         printf("\nError: file not found\n\n");
-        exit(0);
+        EXIT_FAILURE;
     }
 
-    /* Load stock file */
-    loadStock(&system, system.stockFileName);
+    /* Load the files */
+    loadData(&system, argv[1], argv[2]);
 
     /* Initialize menu */
     initMenu(menu);
@@ -51,13 +49,15 @@ int main(int argc, char ** argv)
         /* Print menu and ask for choice */
         option = getMenuChoice(menu);
 
+        /* If option input is not wrong, call function */
         if (option != NULL)
             (*option)(&system);
+
         else
         {
-            printf("Error with menu option");
-            exit(0);
-
+            /* If returned NULL, loop menu again */
+            printf("\nInvalid input, please try again\n");
+            continue;
         }
     }
 }

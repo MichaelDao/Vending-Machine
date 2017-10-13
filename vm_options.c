@@ -12,12 +12,10 @@
 
 #include "vm_options.h"
 
-/**
- * vm_options.c this is where you need to implement the system handling
- * functions (e.g., init, free, load, save) and the main options for
- * your program. You may however have some of the actual work done
- * in functions defined elsewhere.
- **/
+/*
+ * vm_options.c contains the system handling functions
+ * (e.g., init, free, load, save) and the main options.
+ */
 
 /**
  * Initialise the system to a known safe state.
@@ -34,35 +32,39 @@ Boolean systemInit(VmSystem * system)
     system->coinFileName = NULL;
     system->stockFileName = NULL;
 
+    /* It all checks out */
     return TRUE;
 }
 
 /**
- * Free all memory that has been allocated. If you are struggling to
- * find all your memory leaks, compile your program with the -g flag
- * and run it through valgrind.
+ * Free all memory that has been allocated. Run with valgrind to find leaks
  **/
 void systemFree(VmSystem * system)
 {
-
+    /* Delete the linked list before exiting */
     killLinkedList(system->itemList->head);
 
+    /* Free the Linked list memory */
     free(system->itemList);
-
 }
 
 /**
- * Loads the stock and coin data into the system. You will also need to assign
- * the char pointers to the stock and coin file names in the system here so
- * that the same files will be used for saving. A key part of this function is
- * validation. A substantial number of marks are allocated to this function.
+ * Load stock and coin data into the system.
  **/
 Boolean loadData(
     VmSystem * system, const char * stockFileName, const char * coinsFileName)
 {
+    /* Assign the file names to the system */
     system->stockFileName = stockFileName;
     system->coinFileName = coinsFileName;
-    return FALSE;
+
+    /* Load stock file */
+    if(loadStock(system, system->stockFileName))
+        return TRUE;
+
+        /* Error in loading the file */
+    else
+        return FALSE;
 }
 
 /**
@@ -76,23 +78,22 @@ Boolean loadStock(VmSystem * system, const char * fileName)
     /* Store text line */
     char buff[DESC_LEN];
 
+    /* Create stock node */
     Stock * stock;
+
     /* delimiter */
     const char STOCK_DELIMIT[2] = "|";
 
     /* Store individual text */
     char *token;
 
-    /* Allocate memory to Node and Stock */
-    /*List *vendingList = malloc(sizeof(List));
-*/
-
-    /* Read the file TODO Instead of string name, try to use filename char */
+    /* Read the file */
     stockFile = fopen(fileName, "r");
 
     /* read each line in the text file */
     while (fgets(buff, sizeof(buff), stockFile))
     {
+        /* Allocate memory to the stock node */
         stock = malloc(sizeof(Stock));
 
         /* Grab the whole line for processing */
@@ -103,13 +104,10 @@ Boolean loadStock(VmSystem * system, const char * fileName)
 
         /* Create the node and update the itemList*/
         system->itemList = createNode(system->itemList, stock);
-
     }
-
 
     /* Close the file reader */
     fclose(stockFile);
-
     return FALSE;
 }
 
@@ -126,7 +124,6 @@ Boolean loadCoins(VmSystem * system, const char * fileName)
  **/
 Boolean saveStock(VmSystem * system)
 {
-
     return FALSE;
 }
 
@@ -144,15 +141,18 @@ Boolean saveCoins(VmSystem * system)
  **/
 void displayItems(VmSystem * system)
 {
+    /* Create node */
     Node * currentNode;
+    currentNode = system->itemList->head;
 
+    /* Print menu header */
     printf("\nID    | Name%-16s | Available | Price\n", "");
     printf("---------------------------------------------\n");
 
-    currentNode = system->itemList->head;
-
+    /* Loop through all nodes until the end */
     while(currentNode != NULL)
     {
+        /* Print the details of each node */
         printf("%s | ", currentNode->data->id);
         printf("%-20s | ", currentNode->data->name);
         printf("%-9d | ", currentNode->data->onHand);
@@ -163,10 +163,9 @@ void displayItems(VmSystem * system)
         currentNode = currentNode->next;
     }
 
+    /* Prompt to continue */
     pressEnterToContinue();
 }
-
-
 
 /**
  * This option allows the user to purchase an item.
@@ -174,43 +173,71 @@ void displayItems(VmSystem * system)
  **/
 void purchaseItem(VmSystem * system)
 {
+    /* Input for ID */
     char input[ID_LEN + EXTRA_SPACES];
 
+    /* This variable holds the node to be purchased */
     Node * purchaseItem = NULL;
 
+    /* This will hold the Linked list */
     List * vendingList;
     vendingList = system->itemList;
 
+    /* Print header */
     printf("\nPurchase Item\n");
     printf("----------------\n");
 
+    /* Find the node with the ID */
     for(;;)
     {
+        /* prompt */
         printf("Please enter the ID of the item you would like to purchase: ");
 
         /* Take in user input */
-        /*fgets(input, sizeof(input), stdin);
-*/
-        if(!checkInput(input))
+        fgets(input, sizeof(input), stdin);
+
+        /* If nothing is entered, then return to menu */
+        if (strcmp(input, "\n\0") == 0)
+        {
+            printf("\nReturning to the main menu!\n");
             return;
+        }
+
+            /* check buffer overflow */
+        else if (input[strlen(input) - 1] != '\n')
+        {
+            printf("Wrong input, please try again!\n");
+            readRestOfLine();
+            continue;
+        }
 
         /* Before passing the input, modify it */
         input[strlen(input) - 1] = '\0';
 
-        /* TODO IF THERE IS NO STOCK LEFT DONT DO IT*/
+        /* Get the node with the ID */
         purchaseItem = searchItemID(vendingList, input);
 
+        /* Re loop if ID does not exist */
         if (purchaseItem == NULL)
         {
             printf("Could not find %s\n", input);
             continue;
         }
 
+        /* If this item is out of stock, reloop */
+        if (purchaseItem->data->onHand == 0)
+        {
+            printf("This item is out of stock!\n");
+            continue;
+        }
+
+        /* Display the node details in a prompt */
         printf("You have selected '%s %s' This will cost you $%d.%02d.\n",
                purchaseItem->data->name, purchaseItem->data->desc,
                purchaseItem->data->price.dollars,
                purchaseItem->data->price.cents);
 
+        /* Provide instructions via prompt */
         printf("Please hand over the money – "
                        "type in the value of each note/coin in cents.\n"
                        "Press enter on a new and empty line "
@@ -223,9 +250,10 @@ void purchaseItem(VmSystem * system)
             printf("Please come back soon.\n");
         }
         else
-            /* refund and return to menu */
+            /* If quitting, refund change and return to menu */
             return;
 
+        /* Break out of loop */
         break;
     }
 
@@ -254,8 +282,8 @@ void saveAndExit(VmSystem * system)
         fprintf(filePointer, "%s|", cursor->data->id);
         fprintf(filePointer, "%s|", cursor->data->name);
         fprintf(filePointer, "%s|", cursor->data->desc);
-        fprintf(filePointer, "%d.%d|",
-                cursor->data->price.dollars, cursor->data->price.dollars);
+        fprintf(filePointer, "%d.%.2d|",
+                cursor->data->price.dollars, cursor->data->price.cents);
         fprintf(filePointer, "%d\n", cursor->data->onHand);
 
 
@@ -286,26 +314,27 @@ void addItem(VmSystem * system)
     /* Constants */
     /*const int MAX_PRICE_LEN = 4;
     */const int BASE_10 = 10;
-    const char * PRICE_DELIMIT = ".";
+    const char *PRICE_DELIMIT = ".";
 
     /* All the input variables for fgets*/
     char uniqueId[ID_LEN + EXTRA_SPACES];
-    char inputName[NAME_LEN + NULL_SPACE];
-    char inputDesc[DESC_LEN + NULL_SPACE];
+    char inputName[NAME_LEN + EXTRA_SPACES];
+    char inputDesc[DESC_LEN + EXTRA_SPACES];
     char inputPrice[4 + EXTRA_SPACES];
 
     /* Products of the price delimiter */
-    char * dollarExtract;
-    char * centExtract;
+    char *dollarExtract;
+    char *centExtract;
 
     /* Variable that holds the integer of the delimit variables */
     unsigned dollarInt;
     unsigned centInt;
 
     /* Allocate memory to Node and Stock */
-    List * vendingList; /* = malloc(sizeof(List));*/
-    Stock * stock = malloc(sizeof(Stock));
+    List *vendingList; /* = malloc(sizeof(List));*/
+    Stock *stock = malloc(sizeof(Stock));
 
+    /* Initialize vendingList to the system linked list */
     vendingList = system->itemList;
 
     /* Automatically generate a new ID */
@@ -318,46 +347,96 @@ void addItem(VmSystem * system)
     printf("This new meal item will have the Item id of %s.\n", uniqueId);
 
     /* Record the input for Item Name */
-
-    /* Take in item name input */
-    printf("Enter the item name: ");
-    /*fgets(inputName, sizeof(inputName), stdin);*/
-
-    if(!checkInput(inputName))
+    for (;;)
     {
+        /* Take in item name input */
+        printf("Enter the item name: ");
 
-        return;
+        /* Take in user input */
+        fgets(inputName, sizeof(inputName), stdin);
+
+        /* If nothing is entered, then return to menu */
+        if (strcmp(inputName, "\n\0") == 0)
+        {
+            printf("\nReturning to the main menu!\n");
+            return;
+        }
+
+            /* check buffer overflow */
+        else if (inputName[strlen(inputName) - 1] != '\n')
+        {
+            printf("Wrong input, please try again!\n");
+            readRestOfLine();
+            continue;
+        }
+
+        /* Complete the string for name */
+        inputName[strlen(inputName) - 1] = '\0';
+
+        /* Assign the name to the stock node */
+        strcpy(stock->name, inputName);
+
+        /* Move on */
+        break;
     }
 
-    /* Complete the string for name */
-    inputName[strlen(inputName) - 1] = '\0';
-
-    /* Assign the name to the stock node */
-    strcpy(stock->name, inputName);
-
     /* Record the input for Item Description */
-    /* Take in item description via fgets */
-    printf("Enter the item description: ");
-    /*fgets(inputDesc, sizeof(inputDesc), stdin);*/
+    for (;;)
+    {
+        /* Take in item description via fgets */
+        printf("Enter the item description: ");
 
-    if(!checkInput(inputDesc))
-        return;
+        /* Take in user input */
+        fgets(inputDesc, sizeof(inputDesc), stdin);
 
-    /* complete string for description */
-    inputDesc[strlen(inputDesc) - 1] = '\0';
+        /* If nothing is entered, then return to menu */
+        if (strcmp(inputDesc, "\n\0") == 0)
+        {
+            printf("\nReturning to the main menu!\n");
+            return;
+        }
 
-    /* Assign description to stock node */
-    strcpy(stock->desc, inputDesc);
+            /* check buffer overflow */
+        else if (inputDesc[strlen(inputDesc) - 1] != '\n')
+        {
+            printf("Wrong input, please try again!\n");
+            readRestOfLine();
+            continue;
+        }
+
+        /* complete string for description */
+        inputDesc[strlen(inputDesc) - 1] = '\0';
+
+        /* Assign description to stock node */
+        strcpy(stock->desc, inputDesc);
+
+        /* Move on */
+        break;
+    }
 
     /* Record the input for Item price */
     for(;;)
     {
         /* Take in item price from user input */
         printf("Enter the price for this item: ");
-        /*fgets(inputPrice, sizeof(inputPrice), stdin);*/
 
-        if(!checkInput(inputPrice))
+        /* Take in user input */
+        fgets(inputPrice, sizeof(inputPrice), stdin);
+
+        /* If nothing is entered, then return to menu */
+        if (strcmp(inputPrice, "\n\0") == 0)
+        {
+            printf("\nReturning to the main menu!\n");
             return;
+        }
+
+            /* check buffer overflow */
+        else if (inputPrice[strlen(inputPrice) - 1] != '\n')
+        {
+            printf("Wrong input, please try again!\n");
+            readRestOfLine();
+            continue;
+        }
 
         /* Complete the input string */
         inputPrice[strlen(inputPrice) - 1] = '\0';
@@ -399,7 +478,7 @@ void addItem(VmSystem * system)
     system->itemList = createNode(vendingList, stock);
 
     /* Confirm creation of node */
-    printf("This item “%s, %s” has now been added to the menu.\n",
+    printf("\nThis item “%s, %s” has now been added to the menu.\n",
            inputName, inputDesc);
 
     /* Prompt to exit */
@@ -463,47 +542,66 @@ void removeItem(VmSystem * system)
 {
     Node *targetNode = NULL;
     char input[ID_LEN + EXTRA_SPACES];
-    List * vendingList;
 
+    /* Initialize List */
+    List * vendingList;
     vendingList = system->itemList;
 
+    /* Begin loop to remove node */
     for(;;)
     {
+        /* prompt */
         printf("Enter the item id of the item to remove from the menu: ");
 
-        if (!checkInput(input))
+        /* Take in user input */
+        fgets(input, sizeof(input), stdin);
+
+        /* If nothing is entered, then return to menu */
+        if (strcmp(input, "\n\0") == 0)
+        {
+            printf("\nReturning to the main menu!\n");
             return;
+        }
+
+            /* check buffer overflow */
+        else if (input[strlen(input) - 1] != '\n')
+        {
+            printf("Wrong input, please try again!\n");
+            readRestOfLine();
+            continue;
+        }
 
         /* Before passing the input, modify it */
         input[strlen(input) - 1] = '\0';
 
+        /* get the node to delete */
         targetNode = searchItemID(vendingList, input);
 
+        /* Repeat if node could not be found */
         if (targetNode == NULL)
         {
             printf("Could not find %s\n", input);
             continue;
         }
-        else
-        {
-            removeNode(vendingList, targetNode);
-        }
+
+        /* Remove the node if found */
+        removeNode(vendingList, targetNode);
+
+        /* exit loop */
         break;
     }
 
+    /* prompt */
     printf("\n%s has been removed!\n", input);
 
     /* Prompt to exit */
     pressEnterToContinue();
-
 }
 
 /**
- *
- * This option will require you to display the coins from lowest to highest
- * value and the counts of coins should be correctly aligned.
- * This function implements part 4 of requirement 18 in the assignment
- * specifications.
+ * This option will display the coins from lowest to highest value and
+ * correctly align them. This function implements part 4 of requirement 18
+ * in the assignment specifications.
  **/
 void displayCoins(VmSystem * system)
 {
@@ -511,25 +609,26 @@ void displayCoins(VmSystem * system)
 
     /* Prompt to exit */
     pressEnterToContinue();
-
 }
 
 /**
- * This option will require you to iterate over every stock in the
- * list and set its onHand count to the default value specified in
- * the startup code.
+ * This option will iterate over every stock in the list and set its
+ * onHand count to the default value specified in the startup code.
  * This function implements requirement 9 of the assignment specification.
  **/
 void resetStock(VmSystem * system)
 {
+    /* Initialize node to the head node */
     Node * cursor = system->itemList->head;
 
+    /* loop through each node in the linked list and reset stock levels */
     while(cursor != NULL)
     {
         cursor->data->onHand = DEFAULT_STOCK_LEVEL;
         cursor = cursor->next;
     }
 
+    /* prompt */
     printf("All stock has been reset to the default level of %d\n",
            DEFAULT_STOCK_LEVEL);
 
@@ -538,9 +637,8 @@ void resetStock(VmSystem * system)
 }
 
 /**
- * This option will require you to iterate over every coin in the coin
- * list and set its 'count' to the default value specified in the
- * startup code.
+ * This option will iterate over every coin in the coin list and set
+ * its 'count' to the default value specified.
  * This requirement implements part 3 of requirement 18 in the
  * assignment specifications.
  **/
@@ -553,12 +651,12 @@ void resetCoins(VmSystem * system)
 }
 
 /**
- * This option will require you to display goodbye and free the system.
+ * This option will display goodbye and free the system.
  * This function implements requirement 10 of the assignment specification.
  **/
 void abortProgram(VmSystem * system)
 {
-    /*TODO You need to free up memory before leaving*/
+    /* Free up the system memory */
     systemFree(system);
 
     /* Exit the program */
@@ -566,40 +664,16 @@ void abortProgram(VmSystem * system)
     exit(0);
 }
 
+/* This helps the program pause before returning to the menu */
 void pressEnterToContinue()
 {
-    int myChar = 0;
+    /* setup variable */
+    int enterToContinue = 0;
 
+    /* prompt */
     printf("\nPlease press ENTER to continue\n");
 
-    while (myChar != '\r' && myChar  != '\n')
-        myChar = getchar();
-
-
-}
-
-
-Boolean checkInput(char * input)
-{
-    for(;;)
-    {
-        /* Take in user input */
-        fgets(input, sizeof(input), stdin);
-
-        /* If nothing is entered, then return to menu */
-        if (strcmp(input, "\n\0") == 0)
-        {
-            printf("\nReturning to the main menu!\n");
-            return FALSE;
-        }
-
-            /* check buffer overflow */
-        else if (input[strlen(input) - 1] != '\n')
-        {
-            printf("Wrong input, please try again!\n");
-            readRestOfLine();
-            continue;
-        }
-        return TRUE;
-    }
+    /* press enter on anything to continue */
+    while (enterToContinue != '\r' && enterToContinue  != '\n')
+        enterToContinue = getchar();
 }

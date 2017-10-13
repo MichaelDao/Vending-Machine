@@ -39,6 +39,9 @@ Coin* initializeCoins(Coin * cashRegister)
     return NULL;
 }
 
+/*
+ * An extension of the purchase movie
+ */
 Boolean insertMoney(Node * purchaseItem)
 {
     char input[ID_LEN + EXTRA_SPACES];

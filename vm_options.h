@@ -46,10 +46,8 @@ Boolean insertMoney(Node * purchaseItem);
 
 char * generateID(List * vendingList, char uniqueId[]);
 
-Boolean checkInput(char * input);
 Node * removeNode(List * vendingList, Node * removeNode);
 void killLinkedList(Node * head);
-
 
 
 

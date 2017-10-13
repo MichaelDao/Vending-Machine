@@ -17,12 +17,15 @@
  **/
 
 /**
- * In this function you need to initialise the array of menu items
- * according to the text to be displayed for the menu. This array is
+ * Initialise the array of menu items, this array is
  * an array of MenuItem with text and a pointer to the function
  * that will be called.
  **/
 
+/*
+ * Initialize the array of menu items to be displayed for the menu
+ * This array of MenuItem will point to a function that will be called
+ */
 void initMenu(MenuItem * menu)
 {
     /* initialize menu text */
@@ -36,6 +39,7 @@ void initMenu(MenuItem * menu)
     strcpy(menu[7].text, "8. Reset Coins");
     strcpy(menu[8].text, "9. Abort Program");
 
+    /* Initialize index to functions */
     menu[0].function = displayItems;
     menu[1].function = purchaseItem;
     menu[2].function = saveAndExit;
@@ -47,30 +51,13 @@ void initMenu(MenuItem * menu)
     menu[8].function = abortProgram;
 }
 
-void printMenu(MenuItem * menu)
-{
-    int x;
-
-    for(x = 0; x <= sizeof(menu); x++)
-    {
-        if (x == 0)
-            printf("\nMain Menu:\n");
-        else if (x == 3)
-            printf("\nAdministrator-Only Menu:\n");
-
-        printf("%s\n", menu[x].text);
-
-    }
-}
-
-/**
- * Gets input from the user and returns a pointer to the MenuFunction
- * that defines how to perform the user's selection. NULL is returned
- * if an invalid option is entered.
- **/
+/*
+ * Get input from the user and return a pointer to the MenuFunction
+ * to perform the user's selection.
+ * NULL is returned if an invalid option is entered.
+ */
 MenuFunction getMenuChoice(MenuItem * menu)
 {
-
     char input[1 + EXTRA_SPACES];
     int chosenOption;
     int base_10 = 10;
@@ -80,16 +67,9 @@ MenuFunction getMenuChoice(MenuItem * menu)
 
     for(;;)
     {
-        printf("Select your option (1-9): ");
-
         /* Take in user input */
+        printf("Select your option (1-9): ");
         fgets(input, sizeof(input), stdin);
-
-        /* If nothing is entered, then abort */
-      /*  if (strcmp(input, "\n\0") == 0)
-        {
-            return menu[8].function;
-        }*/
 
         /* check buffer overflow */
         if (input[strlen(input) - 1] != '\n')
@@ -99,13 +79,36 @@ MenuFunction getMenuChoice(MenuItem * menu)
             continue;
         }
 
+        /* Transform char into an int */
         chosenOption = (int)strtol(input, NULL, base_10);
 
+        /* As long as input is valid, call chosen function */
         if (chosenOption > 0 && chosenOption <= 9)
             return menu[chosenOption - 1].function;
         else
-            printf("Invalid input, please try again\n");
+            return NULL;
     }
+}
 
-    return NULL;
+/*
+ * Print out all the menu options to the console
+ */
+void printMenu(MenuItem * menu)
+{
+    int x;
+
+    /* Loop and print all the menu text options */
+    for(x = 0; x <= sizeof(menu); x++)
+    {
+        /* User menu only */
+        if (x == 0)
+            printf("\nMain Menu:\n");
+
+            /* Admin only menu */
+        else if (x == 3)
+            printf("\nAdministrator-Only Menu:\n");
+
+        /* Print each loop */
+        printf("%s\n", menu[x].text);
+    }
 }

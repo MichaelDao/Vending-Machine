@@ -92,6 +92,7 @@ List* createNode(List *vendingList, Stock *data)
         newNode->next = currentNode;
     }
 
+
     /* Increment the size integer for each new node*/
     vendingList->size++;
 

@@ -20,27 +20,31 @@ int main(int argc, char ** argv)
     VmSystem system;
 
     /* DEBUG Uncomment for CLion */
-    argv[1] = "stock.dat";
+    /*argv[1] = "stock.dat";
     argv[2] = "coins.dat";
+    */
 
     /* Initialize the system */
     if(!systemInit(&system))
     {
         /* Error if returns false */
         printf("Error initializing system.");
-        EXIT_FAILURE;
-    }
-
-    /* Handle error if no stock file entered */
-    if (system.stockFileName == NULL)
-    {
-        printf("\nError: file not found\n\n");
-        EXIT_FAILURE;
+        exit(0);
     }
 
     /* Load the files */
     loadData(&system, argv[1], argv[2]);
 
+    /* Handle error if no stock file entered */
+    if (system.stockFileName == NULL)
+    {
+        printf("\nError: file not found\n\n");
+        exit(0);
+    }
+
+    /* Load stock file */
+    loadStock(&system, system.stockFileName);
+    
     /* Initialize menu */
     initMenu(menu);
 

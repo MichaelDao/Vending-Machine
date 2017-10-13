@@ -58,13 +58,7 @@ Boolean loadData(
     system->stockFileName = stockFileName;
     system->coinFileName = coinsFileName;
 
-    /* Load stock file */
-    if(loadStock(system, system->stockFileName))
-        return TRUE;
-
-        /* Error in loading the file */
-    else
-        return FALSE;
+    return FALSE;
 }
 
 /**

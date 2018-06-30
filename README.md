@@ -1,2 +1,2 @@
 # Vending-Machine
-A mockup vending machine that uses linked lists in C to store an array of data.
+A C implementation of linked lists that stores and manipulates 'stock' in a vending machine.
